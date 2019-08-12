@@ -13,4 +13,4 @@ class LogisticFunction(object):
     @staticmethod
     def derivative(u):
         y = LogisticFunction.function(u)
-        return y * (1.0 + y)
+        return y * (1.0 - y)
