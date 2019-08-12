@@ -7,31 +7,33 @@ from neural_network.MLP import MLP
 from utilities.Problems import Problem
 
 
-from sklearn.model_selection import train_test_split
+# from sklearn.model_selection import train_test_split
+from utilities.Realization import Realization
 
 def main():
 
     act_func = 'logistic'
     X, y = Problem(problem='iris', act_func=act_func).dataset()
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
-
     input_size = X.shape[1]
-    hidden_size = 6
+    hidden_size = 11
     output_size = y[0].shape[0]
     mlp = MLP(input_size, hidden_size, output_size,
               hidden_act_func=act_func,
               output_act_func=act_func,
-              epoch=300)
+              epoch=200)
 
-    print("Fitting...", end='\t')
-    start = time.time()
-    mlp.fit(X=X_train, y=y_train)
-    end = (time.time() - start)
-    print("Fitting time : %.6fs" % end)
+    Realization().execution(X=X, y=y, clf=mlp, num=20)
 
-    print("Starting test...", end='\t')
-    hit = mlp.test(X=X_test, y=y_test)
-    print("Result from test %.2f%%" % (hit * 100))
+
+    # print("Fitting...", end='\t')
+    # start = time.time()
+    # mlp.fit(X=X_train, y=y_train)
+    # end = (time.time() - start)
+    # print("Fitting time : %.6fs" % end)
+    #
+    # print("Starting test...", end='\t')
+    # hit = mlp.test(X=X_test, y=y_test)
+    # print("Result from test %.2f%%" % (hit * 100))
 
     # print("[WEIGHTS] Input → Hidden")
     # for hn in mlp.hidden_neurons_layer:
