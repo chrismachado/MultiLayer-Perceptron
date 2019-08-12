@@ -28,7 +28,6 @@ class Problem(object):
                     y_[i] = [aux, 1, aux]
                 elif y[i] == 'Iris-virginica':
                     y_[i] = [aux, aux, 1]
-            X = df.iloc[:, [0, 1]].values
-        X = np.c_[-np.ones(shape=(X.shape[0])), X]
+            X = df.iloc[:, [0, 1, 2, 3]].values
 
         return X, y_
