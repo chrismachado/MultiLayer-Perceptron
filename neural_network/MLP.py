@@ -6,6 +6,8 @@ import activation_functions.StepFunction as STEP
 import activation_functions.TanHFunction as TAN
 
 import numpy as np
+import copy as cp
+
 
 class MLP(object):
     def __init__(self,
@@ -32,14 +34,14 @@ class MLP(object):
         \nType of activation function for output layer.
         '''
         self._input_neurons = input_neurons
-        self._hidden_neurons = hidden_neurons + 1
+        self._hidden_neurons = hidden_neurons
         self._output_neurons = output_neurons
         self._eta_min = eta_min
         self._eta_max = eta_max
         self._eta_decay_lim = eta_decay_lim * epoch
         self._epoch = epoch
-        self._hidden_act_func = hidden_act_func
-        self._output_act_func = output_act_func
+        self._hidden_act_func_ = hidden_act_func
+        self._output_act_func_ = output_act_func
 
         # List of every error per epoch
         self.errors = list()
@@ -50,21 +52,21 @@ class MLP(object):
         :return: nothing
         '''
 
-        if self._hidden_act_func == 'default':
+        if self._hidden_act_func_ == 'default':
             self._hidden_act_func = STEP.StepFunction()
-        elif self._hidden_act_func == 'logistic':
+        elif self._hidden_act_func_ == 'logistic':
             self._hidden_act_func = LOG.LogisticFunction()
-        elif self._hidden_act_func == 'tanh':
+        elif self._hidden_act_func_ == 'tanh':
             self._hidden_act_func = TAN.TanHFunction()
         else:
             print("Incorrect parameter used for hidden activation function. Exiting...")
             exit(0)
 
-        if self._output_act_func == 'default':
+        if self._output_act_func_ == 'default':
             self._output_act_func = STEP.StepFunction()
-        elif self._output_act_func == 'logistic':
+        elif self._output_act_func_ == 'logistic':
             self._output_act_func = LOG.LogisticFunction()
-        elif self._output_act_func == 'tanh':
+        elif self._output_act_func_ == 'tanh':
             self._output_act_func = TAN.TanHFunction()
         else:
             print("Incorrect parameter used for output activation function. Exiting.")
@@ -94,6 +96,7 @@ class MLP(object):
         current_eta = self._eta_max
 
         for current_epoch in range(self._epoch):
+            self.shuffle_(X=X, y=y)
             for xi, target in zip(X, y):
                 _activation_elements = self.feedforward(xi=xi)
 
@@ -106,10 +109,6 @@ class MLP(object):
                 current_eta = self.eta_decay(self=self,
                                current_epoch=current_epoch,
                                current_eta=current_eta)
-
-
-    def predict(self, X, y):
-        pass
 
     def feedforward(self, xi):
         '''
@@ -124,8 +123,7 @@ class MLP(object):
         for i in range(self._input_neurons):
             self.input_neurons_layer[i].receive_impulse(xij=xi[i])
             X.append(self.input_neurons_layer[i].get_value())
-            # print("InputNeuron[%d]._xij = %d" % (i, self.input_neurons_layer[i]._xij))
-        X = np.array(X)
+        X = np.insert(X, 0, - 1)
 
         # Active hidden neurons
         H = list()
@@ -135,8 +133,7 @@ class MLP(object):
             H.append(self.hidden_neurons_layer[j].get_h())
             H_derivative.append(self.hidden_neurons_layer[j].get_h_derivative())
 
-        # H = np.array(H)
-        # H_derivative = np.array(H_derivative)
+        H = np.insert(H, 0, -1)
 
         # Active output neurons
         Y = list()
@@ -148,7 +145,6 @@ class MLP(object):
 
         # Y = np.array(Y)
         # Y_derivative = np.array(Y_derivative)
-
         return H, H_derivative, Y, Y_derivative
 
     def backpropagation(self, activation_elements, X, eta, target):
@@ -158,8 +154,9 @@ class MLP(object):
         :param target:
         :return:
         '''
-        # print(activation_elements)
         H, H_derivative, Y, Y_derivative = activation_elements
+        X = np.insert(X, 0, -1)
+
         # Start with output layer. In this layer, the vector weights is called m
         output_error = list()
         for j in range(self._output_neurons):
@@ -167,14 +164,43 @@ class MLP(object):
             output_error.append(_e_j) # Vector with all output neurons errors
             update = eta * _e_j * np.array(H) * Y_derivative[j]
             self.output_neurons_layer[j].update_weight(update=update)
+        output_error = np.array(output_error)
 
         # Finish with weights of hidden layer. In this layer, the weights vector is called w
         for i in range(self._hidden_neurons):
             ei = 0
             for j in range(self._output_neurons):
-                    ei += output_error[j] * Y_derivative[j] * self.output_neurons_layer[j].get_mj(p=i)
-            update = eta * ei * H_derivative[i] * X
+                ei += output_error[j] * Y_derivative[j] * self.output_neurons_layer[j].get_m()[i]
+            update = eta * ei * H_derivative[i] * np.array(X)
             self.hidden_neurons_layer[i].update_weight(update=update)
+
+    def test(self, X, y):
+        hitrate = 0
+        for xi, target in zip(X, y):
+            Y = self.predict(xi=xi)
+            y_obtained = self.around(Y)
+
+            if np.array_equal(y_obtained.astype(int), target):
+                hitrate += 1
+        return hitrate / X.shape[0]
+
+    def predict(self, xi):
+        Y = self.feedforward(xi=xi)[2]
+        return Y
+
+    def around(self, prediction_):
+        prediction = cp.deepcopy(prediction_)
+        _max = max(prediction)
+        for i in range(len(prediction)):
+            if prediction[i] == _max:
+                prediction[i] = 1
+            else:
+                if self._output_act_func_ == 'tanh':
+                    prediction[i] = -1
+                else:
+                    prediction[i] = 0
+        return np.array(prediction, dtype=float)
+
 
     @staticmethod
     def eta_decay(self, current_epoch, current_eta):
@@ -188,3 +214,9 @@ class MLP(object):
             return self._eta_max * pow((self._eta_min / self._eta_max),
                                        (current_epoch / self._eta_decay_lim))
         return current_eta
+
+    def shuffle_(self, X, y):
+        state = np.random.get_state()
+        np.random.shuffle(X)
+        np.random.set_state(state)
+        np.random.shuffle(y)
