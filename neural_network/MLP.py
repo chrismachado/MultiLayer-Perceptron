@@ -20,19 +20,6 @@ class MLP(object):
                  epoch=50,
                  hidden_act_func='default',
                  output_act_func='default'):
-        '''
-        :param input_neurons: Number of neurons for input layer.
-        :param hidden_neurons: Number of neurons for hidden layer. Only one hidden layer is considered.
-        :param output_neurons: Number of neurons for output layer.
-        :param eta_min: Smaller value eta can reach with eta's decay.
-        :param eta_max: Higher value that eta can reach with the decay of eta.
-        :param eta_decay_lim: Percentage of epoch to limit of decay of the eta. Value range is [0, 1).
-        :param epoch: Number of training iterations.
-        :param hidden_act_func: {'default', 'logistic', 'tanh'}. default 'default'.
-        \nType of activation function for hidden layer.
-        :param output_act_func: {'default', 'logistic', 'tanh'}. default 'default'.
-        \nType of activation function for output layer.
-        '''
         self._input_neurons = input_neurons
         self._hidden_neurons = hidden_neurons
         self._output_neurons = output_neurons
@@ -47,11 +34,6 @@ class MLP(object):
         self.errors = list()
 
     def init_neurons(self):
-        '''
-        This function initialize all neurons with all parameters passed into constructor of this class.
-        :return: nothing
-        '''
-
         if self._hidden_act_func_ == 'default':
             self._hidden_act_func = STEP.StepFunction()
         elif self._hidden_act_func_ == 'logistic':
@@ -111,13 +93,6 @@ class MLP(object):
                                current_eta=current_eta)
 
     def feedforward(self, xi):
-        '''
-        This function will feed the first layer, then, first layer\n
-        feed the second layer, then, second layer feed the third layer.\n
-        Then, all neurons will be activated.
-        :param xi: This is an element of sample.
-        :return: returns the computation for  all activations functions elements.
-        '''
         # Active input neurons
         X = list()
         for i in range(self._input_neurons):
@@ -148,12 +123,6 @@ class MLP(object):
         return H, H_derivative, Y, Y_derivative
 
     def backpropagation(self, activation_elements, X, eta, target):
-        '''
-        :param activation_elements:
-        :param eta:
-        :param target:
-        :return:
-        '''
         H, H_derivative, Y, Y_derivative = activation_elements
         X = np.insert(X, 0, -1)
 
@@ -204,12 +173,6 @@ class MLP(object):
 
     @staticmethod
     def eta_decay(self, current_epoch, current_eta):
-        '''
-        :param self: MLP object with max, min eta and eta decay value.
-        :param current_epoch: Current epoch running in fit.
-        :param current_eta: Current eta running in fit.
-        :return: eta updated.
-        '''
         if current_epoch <= self._eta_decay_lim:
             return self._eta_max * pow((self._eta_min / self._eta_max),
                                        (current_epoch / self._eta_decay_lim))

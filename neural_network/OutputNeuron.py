@@ -29,9 +29,6 @@ class OutputNeuron(object):
     def get_m(self):
         return self._m
 
-    def get_mj(self, p):
-        return self._m[p]
-
     def set_m(self, m):
         self._m = m
 

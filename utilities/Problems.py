@@ -30,4 +30,14 @@ class Problem(object):
                     y_[i] = [aux, aux, 1]
             X = df.iloc[:, [0, 1, 2, 3]].values
 
+        self.normalize_(X)
+
         return X, y_
+
+    @staticmethod
+    def normalize_(X):
+        for i in range(X.shape[1]):
+            max_ = max(X[:, i])
+            min_ = min(X[:, i])
+            for j in range(X.shape[0]):
+                X[j, i] = (X[j, i] - min_) / (max_ - min_)
