@@ -1,0 +1,27 @@
+HIDDEN ACTIVATION FUNCTION: logistic
+OUTPUT ACTIVATION FUNCTION: logistic
+
+INPUT SIZE: 34
+HIDDEN SIZE: 01
+OUTPUT SIZE: 06
+
+EPOCHS: 050
+
+TIME:  0.29m
+
+BEST REALIZATION:  1
+WORST REALIZATION:  1
+
+CROSS VALIDATION (BEST)
+|========================================|
+| 01	 |01	 |
+|30.48	 |30.48	 |
+|========================================|
+
+=> Realização 1 : Taxa de acerto 31.08%
+
+RESULTADO FINAL
+|========================================|
+|==  Acurácia : 31.08%                   |
+|==  Desvio Padrão : 0.000000%           |
+|========================================|

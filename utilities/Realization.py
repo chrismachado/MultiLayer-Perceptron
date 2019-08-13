@@ -1,17 +1,24 @@
 from utilities.KFold import KFold
+from utilities.VectorUtilities import VectorUtilities
+
 from sklearn.model_selection import train_test_split
 
 import numpy as np
 import time
 
 class Realization(object):
-    def __init__(self, problem):
+    def __init__(self, problem, k=5):
         self.problem = problem
+        self.vu = VectorUtilities()
+        self.k = k
 
     def execution(self, X, y, clf, num=20):
         accuracy = list()
-        kfold = KFold(k=5, hidden_neurons_list=(2, 4, 6, 8, 10))
-        hidden_neuron = None
+        hidden_type = (2, 4, 6, 8, 10)
+        # hidden_type = (1, 1)
+        # hidden_type = (3, 5, 7, 9, 11)
+        kfold = KFold(k=self.k, hidden_neurons_list=hidden_type)
+        # hidden_neuron = None
         timer_list = list()
         weights_w = list()
         weights_m = list()
@@ -21,10 +28,10 @@ class Realization(object):
         generic_result_list = list()
 
         for _ in range(num):
-            clf.shuffle_(X, y)
+            self.vu.shuffle_(X, y)
 
             print("Execution [%d]" % (_ + 1))
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y)
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.22, stratify=y)
 
             timer = time.time()
             hidden_neuron, hidden_accuracy, hidden_hitrate = kfold.best_result(clf=clf,
@@ -47,17 +54,19 @@ class Realization(object):
             print("\tFinish fitting.")
 
             print("\tStarting test...")
-            hitrate = clf.test(X_test, y_test)
+            hitrate = clf.classify(X_test, y_test)
             accuracy.append(hitrate)
             print("\tHit rate %.2f%%" % (hitrate * 100))
 
             print("-------------------------------------------------------")
 
-        best_index, worst_index = self.evaluate_exec(accuracy=accuracy)
+        best_index, worst_index = self.vu.evaluate_exec(accuracy=accuracy)
 
-        print("Accuracy      : %4.2f%%" % (np.mean(accuracy) * 100))
-        print("Desvio Padrão : %.6f%%" % (np.std(accuracy) * 100))
-        #
+        print("Accuracy      : %4.2f%%" % float((np.mean(accuracy) * 100)))
+        print("Desvio Padrão : %.6f%%" % float((np.std(accuracy) * 100)))
+
+        # Write in file
+
         with open("log/mlp-p(%s)-f(%s)-i%s-h%s-o%s" % (self.problem,
                                            clf._output_act_func_,
                                            X.shape[1],
@@ -73,7 +82,7 @@ class Realization(object):
 
             f.write("EPOCHS: %03d\n\n" % clf._epoch)
 
-            f.write("TIME: %3.6fs\n\n" % timer_list[best_index])
+            f.write("TIME: %5.2fm\n\n" % (sum(timer_list) / 60))
 
             f.write("BEST REALIZATION: %2d\n" % (best_index + 1))
             f.write("WORST REALIZATION: %2d\n\n" % (worst_index + 1))
@@ -95,17 +104,3 @@ class Realization(object):
             f.write("|==  Desvio Padrão : %.6f%%           |\n" % np.std(accuracy))
             f.write("|========================================|\n")
 
-    def evaluate_exec(self, accuracy):
-        max_acc_value = accuracy[0]
-        min_acc_value = accuracy[0]
-        imax_ = 0
-        imin_ = 0
-
-        for index in range(1, len(accuracy)):
-            if max_acc_value <= accuracy[index]:
-                imax_ = index
-                max_acc_value = accuracy[index]
-            if min_acc_value >= accuracy[index]:
-                imin_ = index
-                min_acc_value = accuracy[index]
-        return imax_, imin_

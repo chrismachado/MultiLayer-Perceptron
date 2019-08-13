@@ -1,6 +1,9 @@
-from neural_network.InputNeuron import InputNeuron
-from neural_network.HiddenNeuron import HiddenNeuron
-from neural_network.OutputNeuron import OutputNeuron
+from neurons.InputNeuron import InputNeuron
+from neurons.HiddenNeuron import HiddenNeuron
+from neurons.OutputNeuron import OutputNeuron
+
+from utilities.VectorUtilities import VectorUtilities
+
 import activation_functions.LogisticFunction as LOG
 import activation_functions.StepFunction as STEP
 import activation_functions.TanHFunction as TAN
@@ -20,6 +23,7 @@ class MLP(object):
                  epoch=50,
                  hidden_act_func='default',
                  output_act_func='default'):
+
         self._input_neurons = input_neurons
         self._hidden_neurons = hidden_neurons
         self._output_neurons = output_neurons
@@ -30,8 +34,7 @@ class MLP(object):
         self._hidden_act_func_ = hidden_act_func
         self._output_act_func_ = output_act_func
 
-        # List of every error per epoch
-        self.errors = list()
+        self.vu = VectorUtilities()
 
     def init_neurons(self):
         if self._hidden_act_func_ == 'default':
@@ -78,7 +81,7 @@ class MLP(object):
         current_eta = self._eta_max
 
         for current_epoch in range(self._epoch):
-            self.shuffle_(X=X, y=y)
+            self.vu.shuffle_(X=X, y=y)
             for xi, target in zip(X, y):
                 _activation_elements = self.feedforward(xi=xi)
 
@@ -118,8 +121,6 @@ class MLP(object):
             Y.append(self.output_neurons_layer[k].get_y())
             Y_derivative.append(self.output_neurons_layer[k].get_y_derivative())
 
-        # Y = np.array(Y)
-        # Y_derivative = np.array(Y_derivative)
         return H, H_derivative, Y, Y_derivative
 
     def backpropagation(self, activation_elements, X, eta, target):
@@ -143,7 +144,7 @@ class MLP(object):
             update = eta * ei * H_derivative[i] * np.array(X)
             self.hidden_neurons_layer[i].update_weight(update=update)
 
-    def test(self, X, y):
+    def classify(self, X, y):
         hitrate = 0
         for xi, target in zip(X, y):
             Y = self.predict(xi=xi)
@@ -152,6 +153,10 @@ class MLP(object):
             if np.array_equal(y_obtained.astype(int), target):
                 hitrate += 1
         return hitrate / X.shape[0]
+
+    #TODO fazer funcao de estimaçao para neuronio de regressao
+    def estimate(self, X):
+        pass
 
     def predict(self, xi):
         Y = self.feedforward(xi=xi)[2]
@@ -170,16 +175,9 @@ class MLP(object):
                     prediction[i] = 0
         return np.array(prediction, dtype=float)
 
-
     @staticmethod
     def eta_decay(self, current_epoch, current_eta):
         if current_epoch <= self._eta_decay_lim:
             return self._eta_max * pow((self._eta_min / self._eta_max),
                                        (current_epoch / self._eta_decay_lim))
         return current_eta
-
-    def shuffle_(self, X, y):
-        state = np.random.get_state()
-        np.random.shuffle(X)
-        np.random.set_state(state)
-        np.random.shuffle(y)

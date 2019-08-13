@@ -1,43 +1,46 @@
 import pandas as pd
 import numpy as np
 
+from utilities.Dataset import Dataset
+from utilities.VectorUtilities import VectorUtilities
 
 class Problem(object):
 
     def __init__(self, problem='iris', act_func='default'):
         self.__problem = problem
         self.__act_func = act_func
+        self.dataset = Dataset(act_func=act_func)
+        self.vu = VectorUtilities()
 
-    def dataset(self):
+    def get_dataset(self):
         print("Collecting dataset from → ", end='')
+        X, y = (None, None)
+
         if self.__problem == 'iris':
-            url = 'https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'
-            print(url)
-            df = pd.read_csv(url, header=None)
-            y = df.iloc[:, 4].values
-            y_ = np.zeros((y.shape[0], 3))
-            if self.__act_func == 'tanh':
-                aux = -1
-            else:
-                aux = 0
+            X, y = self.dataset.iris()
 
-            for i in range(y.shape[0]):
-                if y[i] == 'Iris-setosa':
-                    y_[i] = [1, aux, aux]
-                elif y[i] == 'Iris-versicolor':
-                    y_[i] = [aux, 1, aux]
-                elif y[i] == 'Iris-virginica':
-                    y_[i] = [aux, aux, 1]
-            X = df.iloc[:, [0, 1, 2, 3]].values
+        if self.__problem == 'column':
+            X, y = self.dataset.vertebral_column()
 
-        self.normalize_(X)
+        if self.__problem == 'breast_cancer':
+            X, y = self.dataset.breast_cancer()
 
-        return X, y_
+        if self.__problem == 'dermatology':
+            X, y = self.dataset.dermatology()
 
-    @staticmethod
-    def normalize_(X):
-        for i in range(X.shape[1]):
-            max_ = max(X[:, i])
-            min_ = min(X[:, i])
-            for j in range(X.shape[0]):
-                X[j, i] = (X[j, i] - min_) / (max_ - min_)
+        if self.__problem == 'xor':
+            X, y = self.dataset.xor()
+
+        if self.__act_func == 'tanh':
+            aux = -1
+        else:
+            aux = 0
+
+        for i in range(y.shape[0]):
+            for j in range(y.shape[1]):
+                if y[i][j] == 0:
+                    y[i][j] = aux
+
+        # self.vu.normalize_(X=X)
+
+        return X, y
