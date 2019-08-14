@@ -1,5 +1,8 @@
+
 import pandas as pd
 import numpy as np
+import requests, zipfile, io
+
 
 class Dataset(object):
     def __init__(self, act_func='default'):
@@ -27,9 +30,29 @@ class Dataset(object):
 
         return X, y_
 
-    #TODO fazer bases coluna, cancer, dermatology e xor
+    #TODO fazer bases xor
     def vertebral_column(self):
-        return
+        url = 'https://archive.ics.uci.edu/ml/machine-learning-databases/00212/vertebral_column_data.zip'
+        print(url)
+
+        r = requests.get(url)
+        z = zipfile.ZipFile(io.BytesIO(r.content))
+        df = pd.read_csv(z.open('column_3C.dat'), header=None, sep=' ')
+
+        y = df.iloc[:, 6].values
+        y_ = np.zeros((y.shape[0], 3))
+
+        for i in range(y.shape[0]):
+            if y[i] == 'DH':
+                y_[i][0] = 1
+            elif y[i] == 'SL':
+                y_[i][1] = 1
+            elif y[i] == 'NO':
+                y_[i][2] = 1
+        X = df.iloc[:, [i for i in range(5)]].values
+        X = np.float_(X)
+
+        return X, y_
 
     def breast_cancer(self):
         url = 'https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/breast-cancer-wisconsin.data'
@@ -47,7 +70,7 @@ class Dataset(object):
         X = df.iloc[:, [i for i in range(1, 10)]].values
 
         X = np.where(X == '?', 0, X)
-        X = np.int_(X)
+        X = np.float_(X)
 
         return X, y_
 
@@ -69,9 +92,9 @@ class Dataset(object):
         X = df.iloc[:, [i for i in range(34)]].values
 
         X = np.where(X == '?', 0, X)
-        X = np.int_(X)
+        X = np.float_(X)
 
         return X, y_
 
     def xor(self):
-        return
+        base_elements = [[0, 0], [0, 1], [1, 0], [1, 1]]

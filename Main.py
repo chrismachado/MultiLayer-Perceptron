@@ -13,14 +13,11 @@ from utilities.Realization import Realization
 def main():
 
     act_func = 'logistic'
-    desc_prob = 'dermatology'
+    # desc_prob = 'column'
+    # desc_prob = 'dermatology'
+    desc_prob = 'breast_cancer'
     prob = Problem(problem=desc_prob, act_func=act_func)
     X, y = prob.get_dataset()
-
-    import math
-    print(math.floor(X.shape[0] * 0.7))
-    print(X.shape[0])
-    # print(y)
 
     input_size = X.shape[1]
     hidden_size = None
@@ -29,12 +26,12 @@ def main():
     mlp = MLP(input_size, hidden_size, output_size,
               hidden_act_func=act_func,
               output_act_func=act_func,
-              epoch=50)
+              epoch=150)
 
     Realization(problem=desc_prob, k=5).execution(X=X,
                                              y=y,
                                              clf=mlp,
-                                             num=1)
+                                             num=20)
 
 
 if __name__ == '__main__':

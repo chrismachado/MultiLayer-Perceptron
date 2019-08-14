@@ -5,6 +5,7 @@ from sklearn.model_selection import train_test_split
 
 import numpy as np
 import time
+import math
 
 class Realization(object):
     def __init__(self, problem, k=5):
@@ -13,12 +14,15 @@ class Realization(object):
         self.k = k
 
     def execution(self, X, y, clf, num=20):
+        balanced_split = self.balance(k=self.k, start=0.2, size=X.shape[0])
         accuracy = list()
+
+        # hidden_type = (9, 10, 11, 12, 13)
         hidden_type = (2, 4, 6, 8, 10)
-        # hidden_type = (1, 1)
         # hidden_type = (3, 5, 7, 9, 11)
+
         kfold = KFold(k=self.k, hidden_neurons_list=hidden_type)
-        # hidden_neuron = None
+
         timer_list = list()
         weights_w = list()
         weights_m = list()
@@ -31,7 +35,7 @@ class Realization(object):
             self.vu.shuffle_(X, y)
 
             print("Execution [%d]" % (_ + 1))
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.22, stratify=y)
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=balanced_split, stratify=y)
 
             timer = time.time()
             hidden_neuron, hidden_accuracy, hidden_hitrate = kfold.best_result(clf=clf,
@@ -104,3 +108,14 @@ class Realization(object):
             f.write("|==  Desvio Padrão : %.6f%%           |\n" % np.std(accuracy))
             f.write("|========================================|\n")
 
+    def balance(self, size, k=5, start=0.2):
+        print("Balancing test size before executions...")
+        balanced_division = start
+        while(1):
+            balanced_division += 0.01
+            if math.floor(size * (1 - balanced_division)) % k == 0:
+                break
+
+        print("N Samples %d\t|\tEquivalent %2.2f%%" % (math.floor(size * (1 - balanced_division)),
+                                                           (100 - 100*balanced_division)))
+        return balanced_division

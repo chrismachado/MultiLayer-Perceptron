@@ -41,6 +41,7 @@ class Problem(object):
                 if y[i][j] == 0:
                     y[i][j] = aux
 
-        # self.vu.normalize_(X=X)
+
+        self.vu.normalize_(X=X)
 
         return X, y
