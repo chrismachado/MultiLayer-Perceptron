@@ -1,0 +1,27 @@
+DATASET USED: xorHIDDEN ACTIVATION FUNCTION: logistic
+OUTPUT ACTIVATION FUNCTION: logistic
+
+INPUT SIZE: 02
+HIDDEN SIZE: 04
+OUTPUT SIZE: 02
+
+EPOCHS: 010
+
+TIME:  0.01m
+
+BEST plotIZATION:  1
+WORST plotIZATION:  1
+
+CROSS VALIDATION (BEST)
+|========================================|
+| 04	 |06	 |08	 |
+|45.00	 |45.00	 |45.00	 |
+|========================================|
+
+=> plotização 1 : Taxa de acerto 100.00%
+
+RESULTADO FINAL
+|========================================|
+|==  Acurácia : 100.00%                   |
+|==  Desvio Padrão : 0.000000%           |
+|========================================|

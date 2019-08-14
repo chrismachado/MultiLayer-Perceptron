@@ -1,0 +1,46 @@
+HIDDEN ACTIVATION FUNCTION: logistic
+OUTPUT ACTIVATION FUNCTION: logistic
+
+INPUT SIZE: 05
+HIDDEN SIZE: 09
+OUTPUT SIZE: 03
+
+EPOCHS: 150
+
+TIME: 64.76m
+
+BEST REALIZATION:  2
+WORST REALIZATION: 19
+
+CROSS VALIDATION (BEST)
+|========================================|
+| 09	 |10	 |11	 |12	 |13	 |
+|65.53	 |64.26	 |64.68	 |62.55	 |62.98	 |
+|========================================|
+
+=> Realização 1 : Taxa de acerto 66.67%
+=> Realização 2 : Taxa de acerto 82.67%
+=> Realização 3 : Taxa de acerto 64.00%
+=> Realização 4 : Taxa de acerto 76.00%
+=> Realização 5 : Taxa de acerto 72.00%
+=> Realização 6 : Taxa de acerto 68.00%
+=> Realização 7 : Taxa de acerto 69.33%
+=> Realização 8 : Taxa de acerto 74.67%
+=> Realização 9 : Taxa de acerto 68.00%
+=> Realização 10 : Taxa de acerto 78.67%
+=> Realização 11 : Taxa de acerto 70.67%
+=> Realização 12 : Taxa de acerto 72.00%
+=> Realização 13 : Taxa de acerto 74.67%
+=> Realização 14 : Taxa de acerto 64.00%
+=> Realização 15 : Taxa de acerto 68.00%
+=> Realização 16 : Taxa de acerto 62.67%
+=> Realização 17 : Taxa de acerto 69.33%
+=> Realização 18 : Taxa de acerto 64.00%
+=> Realização 19 : Taxa de acerto 62.67%
+=> Realização 20 : Taxa de acerto 73.33%
+
+RESULTADO FINAL
+|========================================|
+|==  Acurácia : 70.07%                   |
+|==  Desvio Padrão : 0.053579%           |
+|========================================|

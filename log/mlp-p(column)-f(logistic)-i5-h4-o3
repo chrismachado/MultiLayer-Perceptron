@@ -1,0 +1,28 @@
+DATASET USED: column
+HIDDEN ACTIVATION FUNCTION: logistic
+OUTPUT ACTIVATION FUNCTION: logistic
+
+INPUT SIZE: 05
+HIDDEN SIZE: 04
+OUTPUT SIZE: 03
+
+EPOCHS: 100
+
+TIME:  0.80m
+
+BEST plotIZATION:  1
+WORST plotIZATION:  1
+
+CROSS VALIDATION (BEST)
+|========================================|
+| 04	 |06	 |08	 |
+|67.23	 |65.96	 |67.23	 |
+|========================================|
+
+=> plotização 1 : Taxa de acerto 62.67%
+
+RESULTADO FINAL
+|========================================|
+|==  Acurácia : 62.67%                   |
+|==  Desvio Padrão : 0.000000%           |
+|========================================|
