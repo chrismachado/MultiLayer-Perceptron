@@ -26,7 +26,7 @@ class HiddenNeuron(object):
         return self._h_derivative
 
     def get_w(self):
-        return self.get_w()
+        return self._w
 
     def get_wi(self, p):
         return self._w[p]

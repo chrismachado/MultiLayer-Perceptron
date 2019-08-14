@@ -2,7 +2,7 @@
 import pandas as pd
 import numpy as np
 import requests, zipfile, io
-
+import random
 
 class Dataset(object):
     def __init__(self, act_func='default'):
@@ -97,4 +97,46 @@ class Dataset(object):
         return X, y_
 
     def xor(self):
-        base_elements = [[0, 0], [0, 1], [1, 0], [1, 1]]
+        print("myself, generating data...")
+        base_elements = [[0, 0], [1, 1], [0, 1], [1, 0]]
+
+        X = np.zeros(shape=(200, 2))
+        y = np.zeros(shape=(200, 2))
+
+        noise = 0.1
+
+        for i in range(200):
+            if i < 50 :
+                X[i][0] = 0 + np.random.uniform(-noise, noise)
+                X[i][1] = 0 + np.random.uniform(-noise, noise)
+                y[i][0] = 1
+
+            if 50 <= i < 100:
+                X[i][0] = 0 + np.random.uniform(-noise, noise)
+                X[i][1] = 1 + np.random.uniform(-noise, noise)
+                y[i][0] = 1
+
+            if 100 <= i < 150:
+                X[i][0] = 1 + np.random.uniform(-noise, noise)
+                X[i][1] = 0 + np.random.uniform(-noise, noise)
+                y[i][1] = 1
+
+            if i >= 150:
+                X[i][0] = 1 + np.random.uniform(-noise, noise)
+                X[i][1] = 1 + np.random.uniform(-noise, noise)
+                y[i][1] = 1
+
+        return X, y
+
+    def regression(self):
+        print("myself, generating data...")
+        noise = 0.2
+        X = np.zeros(shape=(500, 1))
+        y = np.zeros(shape=(500, 1))
+        for i in range(500):
+            X[i] = i/25
+            y[i] = 3 * np.sin(X[i] + np.random.uniform(-noise, noise)) + 1
+
+        return X, y
+
+

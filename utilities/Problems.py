@@ -31,6 +31,9 @@ class Problem(object):
         if self.__problem == 'xor':
             X, y = self.dataset.xor()
 
+        if self.__problem == 'regression':
+            X, y = self.dataset.regression()
+
         if self.__act_func == 'tanh':
             aux = -1
         else:
@@ -41,7 +44,7 @@ class Problem(object):
                 if y[i][j] == 0:
                     y[i][j] = aux
 
-
-        self.vu.normalize_(X=X)
+        if self.__problem != 'regression':
+            self.vu.normalize_(X=X)
 
         return X, y

@@ -7,6 +7,7 @@ from utilities.VectorUtilities import VectorUtilities
 import activation_functions.LogisticFunction as LOG
 import activation_functions.StepFunction as STEP
 import activation_functions.TanHFunction as TAN
+import activation_functions.RegressionFunction as REG
 
 import numpy as np
 import copy as cp
@@ -53,6 +54,8 @@ class MLP(object):
             self._output_act_func = LOG.LogisticFunction()
         elif self._output_act_func_ == 'tanh':
             self._output_act_func = TAN.TanHFunction()
+        elif self._output_act_func_ == 'regression':
+            self._output_act_func = REG.RegressionFunction()
         else:
             print("Incorrect parameter used for output activation function. Exiting.")
             exit(0)
@@ -147,8 +150,7 @@ class MLP(object):
     def classify(self, X, y):
         hitrate = 0
         for xi, target in zip(X, y):
-            Y = self.predict(xi=xi)
-            y_obtained = self.around(Y)
+            y_obtained = self.around(self.predict(xi=xi))
 
             if np.array_equal(y_obtained.astype(int), target):
                 hitrate += 1
@@ -156,7 +158,18 @@ class MLP(object):
 
     #TODO fazer funcao de estimaçao para neuronio de regressao
     def estimate(self, X):
-        pass
+        y_final = list()
+        for xi in X:
+            y_obtained = self.predict(xi=xi)
+            a = 0
+            b = 0
+            for i in range(self._output_neurons):
+                a += self.output_neurons_layer[i].get_m()[]
+                b += self.output_neurons_layer[i].get_m
+            # y_final.append( 3 *np.sin(xi) + 1)
+            y_final.append( 3 *np.sin(y_obtained) + 1)
+
+        return y_final
 
     def predict(self, xi):
         Y = self.feedforward(xi=xi)[2]
