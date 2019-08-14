@@ -16,10 +16,13 @@ from utilities.PlotLib import PlotUtil
 def main():
 
     act_func = 'logistic'
-    output_act_func = 'regression'
-    desc_prob = 'regression'
+    output_act_func = 'logistic'
+
+    # output_act_func = 'regression'
+    # desc_prob = 'regression'
+
     # desc_prob = 'xor'
-    # desc_prob = 'column'
+    desc_prob = 'column'
     # desc_prob = 'iris'
     # desc_prob = 'dermatology'
     # desc_prob = 'breast_cancer'
@@ -33,23 +36,13 @@ def main():
     mlp = MLP(input_size, hidden_size, output_size,
               hidden_act_func=act_func,
               output_act_func=act_func,
-              epoch=10)
-
-    # plt.plot(X, y, 'bo', markersize=2)
+              epoch=100)
 
 
-    mlp.fit(X, y)
-    print(mlp.hidden_neurons_layer[0].get_w())
-    y_predict_list = mlp.estimate(X=X)
-    # print(y_predict_list)
-
-    plt.plot(X, y_predict_list, 'yo')
-    plt.show()
-
-    # Realization(problem=desc_prob, k=2).execution(X=X,
-    #                                          y=y,
-    #                                          clf=mlp,
-    #                                          num=1)
+    Realization(problem=desc_prob, k=5).execution(X=X,
+                                             y=y,
+                                             clf=mlp,
+                                             num=1)
 
 
 if __name__ == '__main__':

@@ -164,7 +164,7 @@ class MLP(object):
             a = 0
             b = 0
             for i in range(self._output_neurons):
-                a += self.output_neurons_layer[i].get_m()[]
+                a += self.output_neurons_layer[i].get_m()
                 b += self.output_neurons_layer[i].get_m
             # y_final.append( 3 *np.sin(xi) + 1)
             y_final.append( 3 *np.sin(y_obtained) + 1)
