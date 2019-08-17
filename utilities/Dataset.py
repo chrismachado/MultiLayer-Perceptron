@@ -130,13 +130,15 @@ class Dataset(object):
 
     def regression(self):
         print("myself, generating data...")
-        noise = 0.2
-        X = np.zeros(shape=(500, 1))
-        y = np.zeros(shape=(500, 1))
-        for i in range(500):
-            X[i] = i/25
-            y[i] = 3 * np.sin(X[i] + np.random.uniform(-noise, noise)) + 1
 
+        N = 500
+        X = np.random.normal(size=N)
+        X = X.reshape((N, 1))
+        noise = 0.25
+        randoms = np.random.uniform(-noise, noise, N)
+        noises = np.reshape(randoms, newshape=(N, 1))
+        y = 3.0 * np.sin(X) + 1 + noises
+        y = y.reshape((N, 1))
         return X, y
 
 

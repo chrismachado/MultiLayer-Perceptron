@@ -37,6 +37,9 @@ class MLP(object):
 
         self.vu = VectorUtilities()
 
+        self._output_error = []
+        self._hidden_error = []
+
     def init_neurons(self):
         if self._hidden_act_func_ == 'default':
             self._hidden_act_func = STEP.StepFunction()
@@ -85,18 +88,30 @@ class MLP(object):
 
         for current_epoch in range(self._epoch):
             self.vu.shuffle_(X=X, y=y)
+
+            hidden_error_per_epoch = 0
+            output_error_per_epoch = 0
             for xi, target in zip(X, y):
                 _activation_elements = self.feedforward(xi=xi)
 
                 # Back propagation Algorithm
-                self.backpropagation(activation_elements=_activation_elements,
-                                     X=xi,
-                                     eta=current_eta,
-                                     target=target)
+                hidden_error, output_error = self.backpropagation(activation_elements=_activation_elements,
+                                                                  X=xi,
+                                                                  eta=current_eta,
+                                                                  target=target)
+
+                hidden_error_per_epoch += sum(hidden_error)
+                output_error_per_epoch += sum(output_error)
 
                 current_eta = self.eta_decay(self=self,
                                current_epoch=current_epoch,
                                current_eta=current_eta)
+
+            self._hidden_error.append(hidden_error_per_epoch)
+            self._output_error.append(output_error_per_epoch)
+
+            if hidden_error_per_epoch == 0:
+                break
 
     def feedforward(self, xi):
         # Active input neurons
@@ -139,14 +154,17 @@ class MLP(object):
             self.output_neurons_layer[j].update_weight(update=update)
         output_error = np.array(output_error)
 
+        hidden_error = list()
         # Finish with weights of hidden layer. In this layer, the weights vector is called w
         for i in range(self._hidden_neurons):
             ei = 0
             for j in range(self._output_neurons):
                 ei += output_error[j] * Y_derivative[j] * self.output_neurons_layer[j].get_m()[i]
+
+            hidden_error.append(ei)
             update = eta * ei * H_derivative[i] * np.array(X)
             self.hidden_neurons_layer[i].update_weight(update=update)
-
+        return hidden_error, output_error
     def classify(self, X, y):
         hitrate = 0
         for xi, target in zip(X, y):
@@ -160,14 +178,9 @@ class MLP(object):
     def estimate(self, X):
         y_final = list()
         for xi in X:
-            y_obtained = self.predict(xi=xi)
-            a = 0
-            b = 0
-            for i in range(self._output_neurons):
-                a += self.output_neurons_layer[i].get_m()
-                b += self.output_neurons_layer[i].get_m
-            # y_final.append( 3 *np.sin(xi) + 1)
-            y_final.append( 3 *np.sin(y_obtained) + 1)
+            self.feedforward(xi=xi)
+            y_obtained = self.output_neurons_layer[0].get_y()
+            y_final.append(y_obtained)
 
         return y_final
 
@@ -187,6 +200,18 @@ class MLP(object):
                 else:
                     prediction[i] = 0
         return np.array(prediction, dtype=float)
+
+    def predict_1D(self, X):
+        y = list()
+        for x in X:
+            y_obtained = self.around(self.predict(xi=x))
+
+            if np.array_equal(y_obtained.astype(int), [0, 1]):
+                y.append(0)
+            elif np.array_equal(y_obtained.astype(int), [1, 0]):
+                y.append(1)
+
+        return np.array(y)
 
     @staticmethod
     def eta_decay(self, current_epoch, current_eta):
