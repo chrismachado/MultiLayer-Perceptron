@@ -1,5 +1,6 @@
 import numpy as np
 import time
+from sklearn.metrics import mean_squared_error
 
 
 class KFold(object):
@@ -32,7 +33,7 @@ class KFold(object):
             accuracy_n_hidden.append(clf.predict(X=X_splitted_train[i],
                                                   y=y_splitted_train[i]))
 
-            print("Computation %.2f" % accuracy_n_hidden[-1])
+            print("Computation %.6f" % accuracy_n_hidden[-1])
 
         return np.mean(accuracy_n_hidden), accuracy_n_hidden
 
@@ -61,7 +62,7 @@ class KFold(object):
                 print("\t\tMSE : %.5f" % ahv)
                 print("\t\tRMSE : %.5f" % np.sqrt(ahv))
             else:
-                print("\t\tAccuracy : %.2f" % ahv)
+                print("\t\tAccuracy : %.6f" % ahv)
 
             print("\t\tArray → %s" % ahl)
 
@@ -78,7 +79,7 @@ class KFold(object):
             f.write("TIME: %3.2f s\n" % timerf)
             f.write("CROSS VALIDATION \n")
             f.write("BEST HIDDEN SIZE: %2d \n" % self.hidden_neurons_list[best])
-            f.write("ACCURACY : %2.2f\n\n" % (np.mean(accuracy_hidden_value) * 100))
+            f.write("ACCURACY : %2.2f\n\n" % (np.mean(accuracy_hidden_value)))
             f.write("|========================================|\n| ")
             for i in range(len(self.hidden_neurons_list)):
                 f.write("%02d\t |" % self.hidden_neurons_list[i])

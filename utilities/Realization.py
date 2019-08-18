@@ -12,21 +12,19 @@ import copy as cp
 
 
 class Realization(object):
-    def __init__(self, problem, k=5):
+    def __init__(self, classifier,  problem, k=5, hidden_size=(2, 4, 6, 8, 10)):
+        self.classifier = classifier
         self.problem = problem
         self.vu = VectorUtilities()
         self.k = k
+        self.hidden_size = hidden_size
 
     def execution(self, X, y, clf, num=20):
         balanced_split = self.vu.balance(problem=self.problem, k=self.k, start=0.2, size=X.shape[0])
 
         accuracy = list()
 
-        # hidden_type = (9, 10, 11, 12, 13)
-        # hidden_type = (2, 4, 6, 8, 10)
-        # hidden_type = (4, 6, 8)
-        # hidden_type = (3, 5, 7, 9, 11)
-        hidden_type = (1, 2, 3, 4)
+        hidden_type = self.hidden_size
 
         kfold = KFold(k=self.k, hidden_neurons_list=hidden_type)
 
@@ -71,7 +69,7 @@ class Realization(object):
             print("\tStarting test...")
             computation = clf.predict(X_test, y_test)
             accuracy.append(computation)
-            print("\tHit rate %.5f" % computation )
+            print("\tComputation %.5f" % computation)
 
             print("-------------------------------------------------------")
 
@@ -81,19 +79,22 @@ class Realization(object):
         clf.hidden_neurons_layer = weights_w[best_index]
         clf.output_neurons_layer = weights_m[best_index]
 
+        self.save_weights(clf.hidden_neurons_layer, clf.output_neurons_layer, clf._output_act_func_)
+
         if clf._output_act_func_ == 'regression':
-            print("MSE médio            : %4.2f" % np.mean(accuracy))
-            print("RMSE médio            : %4.2f" % np.mean(np.sqrt(accuracy)))
-            PlotUtil.plot_regression(X_plot, y_plot, clf, problem=self.problem, act_func=clf._output_act_func_)
+            print("MSE                  : %4.6f" % np.mean(accuracy))
+            print("RMSE                  : %4.6f" % np.mean(np.sqrt(accuracy)))
+            PlotUtil.plot_regression(X_test, y_test, clf, problem=self.problem, act_func=clf._output_act_func_, classifier=self.classifier)
         else:
             print("Accuracy            : %4.2f" % np.mean(accuracy))
-            if 1 <= clf._output_neurons <= 2:
-                PlotUtil.plot_decision_boundary(X_test, clf.boundary_decision(X_test), clf)
+            # if 1 <= clf._input_neurons <= 2:
+            #     PlotUtil.plot_decision_boundary(X_test, clf.boundary_decision(X_test), clf)
 
         print("Standard Deviations : %.6f" % (np.std(accuracy)))
 
         # Write in file
-        with open("log/mlp-p(%s)-f(%s)-i%s-h%s-o%s.txt" % (self.problem,
+        with open("log/%s-p(%s)-f(%s)-i%s-h%s-o%s" % (self.classifier,
+                                                           self.problem,
                                                        clf._output_act_func_,
                                                        X.shape[1],
                                                        best_perform[best_index],
@@ -108,7 +109,7 @@ class Realization(object):
             f.write("HIDDEN SIZE: %02d\n" % best_perform[best_index])
             f.write("OUTPUT SIZE: %02d\n\n" % clf._output_neurons)
 
-            f.write("EPOCHS: %03d\n\n" % clf._epoch)
+            f.write("EPOCHS: %s\n\n" % clf._epoch)
 
             f.write("TIME: %5.2fm\n\n" % (sum(timer_list) / 60))
 
@@ -121,7 +122,7 @@ class Realization(object):
                 f.write("%02d\t |" % kfold.hidden_neurons_list[i])
             f.write("\n|")
             for i in range(len(kfold.generic_result)):
-                f.write("%4.2f\t |" % (generic_result_list[best_index][i] * 100))
+                f.write("%4.6f\t |" % (generic_result_list[best_index][i] * 100))
             f.write("\n|========================================|\n\n")
 
             if self.problem == 'regression':
@@ -129,17 +130,36 @@ class Realization(object):
                     f.write("=> Realização %d : MSE %.5f | RMSE %.5f  \n" % ((i + 1), accuracy[i], np.sqrt(accuracy[i])))
             else:
                 for i in range(len(accuracy)):
-                    f.write("=> Realização %d : Taxa de acerto %.2f  \n" % ((i + 1), (accuracy[i]) * 100))
+                    f.write("=> Realização %d : Computation %.2f  \n" % ((i + 1), (accuracy[i]) * 100))
 
             f.write("\nRESULTADO FINAL\n")
             f.write("|========================================|\n")
             if self.problem == 'regression':
-                f.write("|==  MSE médio : %4.2f                     |\n" % (np.mean(accuracy)))
+                f.write("|==  MSE: %4.6f                     |\n" % (np.mean(accuracy)))
                 mrmse = np.sum(np.sqrt(np.array(accuracy)))
-                f.write("|==  RMSE médio : %4.2f                     |\n" % mrmse)
-                f.write("|==  Desvio Padrão : %.6f             |\n" % np.std(accuracy))
+                f.write("|==  RMSE: %4.6f                     |\n" % mrmse)
+                f.write("|==  Standard Deviation : %.6f             |\n" % np.std(accuracy))
             else:
                 f.write("|==  Acurácia : %4.2f                    |\n" % (np.mean(accuracy) * 100))
-                f.write("|==  Desvio Padrão : %.6f            |\n" % np.std(accuracy))
+                f.write("|==  Standard Deviation : %.6f            |\n" % np.std(accuracy))
             f.write("|========================================|\n")
 
+
+
+    def save_weights(self, hidden_layer, output_layer, output_act_func):
+        hidden_neurons = len(hidden_layer)
+        output_neurons = len(output_layer)
+        with open("weight_log/%s-p(%s)-f(%s)-h%s-o%s" % (self.classifier,
+                                                      self.problem,
+                                                      output_act_func,
+                                                      hidden_neurons,
+                                                      output_neurons), 'w') as f:
+            f.write("W: \n")
+            for i in range(hidden_neurons):
+                f.write("%s\n" % hidden_layer[i].get_w())
+
+
+            f.write("\nM: \n")
+            for j in range(output_neurons):
+                f.write("%s\n" % output_layer[j].get_m())
+                f.write("\n")

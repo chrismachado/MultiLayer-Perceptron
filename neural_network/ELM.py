@@ -14,32 +14,21 @@ import numpy as np
 import copy as cp
 
 
-class MLP(object):
+class ELM(object):
     def __init__(self,
                  input_neurons,
                  hidden_neurons,
                  output_neurons,
-                 eta_min=0.001,
-                 eta_max=0.5,
-                 eta_decay_lim=0.8,
-                 epoch=50,
                  hidden_act_func='default',
                  output_act_func='default'):
 
         self._input_neurons = input_neurons
         self._hidden_neurons = hidden_neurons
         self._output_neurons = output_neurons
-        self._eta_min = eta_min
-        self._eta_max = eta_max
-        self._eta_decay_lim = eta_decay_lim * epoch
-        self._epoch = epoch
         self._hidden_act_func_ = hidden_act_func
         self._output_act_func_ = output_act_func
 
-        self.vu = VectorUtilities()
-
-        self._output_error = []
-        self._hidden_error = []
+        self._epoch = None
 
     def init_neurons(self):
         if self._hidden_act_func_ == 'default':
@@ -85,87 +74,24 @@ class MLP(object):
 
     def fit(self, X, y):
         self.init_neurons()
-        current_eta = self._eta_max
+        X = np.c_[-np.ones(X.shape[0]), X]
+        self.feedforward(X, y)
 
-        for current_epoch in range(self._epoch):
-            self.vu.shuffle_(X=X, y=y)
+    def feedforward(self, X, y):
+        W, M = self.join_weights()
+        U = X.dot(W.T)
 
-            hidden_error_per_epoch = 0
-            output_error_per_epoch = 0
-            for xi, target in zip(X, y):
-                _activation_elements = self.feedforward(xi=xi)
+        H = self._hidden_act_func.function(U) # XTW
+        H = np.c_[-np.ones(H.shape[0]), H] # bias added
+        Ht = np.transpose(H)
 
-                # Back propagation Algorithm
-                hidden_error, output_error = self.backpropagation(activation_elements=_activation_elements,
-                                                                  X=xi,
-                                                                  eta=current_eta,
-                                                                  target=target)
+        M = np.dot(np.linalg.pinv(np.dot(Ht, H)), np.dot(Ht, y))
 
-                hidden_error_per_epoch += sum(hidden_error)
-                output_error_per_epoch += sum(output_error)
-
-                current_eta = self.eta_decay(self=self,
-                               current_epoch=current_epoch,
-                               current_eta=current_eta)
-
-            self._hidden_error.append(hidden_error_per_epoch)
-            self._output_error.append(output_error_per_epoch)
-
-            if hidden_error_per_epoch == 0:
-                break
-
-    def feedforward(self, xi):
-        # Active input neurons
-        X = list()
-        for i in range(self._input_neurons):
-            self.input_neurons_layer[i].receive_impulse(xij=xi[i])
-            X.append(self.input_neurons_layer[i].get_value())
-        X = np.insert(X, 0, - 1)
-
-        # Active hidden neurons
-        H = list()
-        H_derivative = list()
-        for j in range(self._hidden_neurons):
-            self.hidden_neurons_layer[j].activation(X=X)
-            H.append(self.hidden_neurons_layer[j].get_h())
-            H_derivative.append(self.hidden_neurons_layer[j].get_h_derivative())
-
-        H = np.insert(H, 0, -1)
-
-        # Active output neurons
-        Y = list()
-        Y_derivative = list()
-        for k in range(self._output_neurons):
-            self.output_neurons_layer[k].activation(H=H)
-            Y.append(self.output_neurons_layer[k].get_y())
-            Y_derivative.append(self.output_neurons_layer[k].get_y_derivative())
-
-        return H, H_derivative, Y, Y_derivative
-
-    def backpropagation(self, activation_elements, X, eta, target):
-        H, H_derivative, Y, Y_derivative = activation_elements
-        X = np.insert(X, 0, -1)
-
-        # Start with output layer. In this layer, the vector weights is called m
-        output_error = list()
-        for j in range(self._output_neurons):
-            _e_j = (target[j] - Y[j])
-            output_error.append(_e_j) # Vector with all output neurons errors
-            update = eta * _e_j * np.array(H) * Y_derivative[j]
-            self.output_neurons_layer[j].update_weight(update=update)
-        output_error = np.array(output_error)
-
-        hidden_error = list()
-        # Finish with weights of hidden layer. In this layer, the weights vector is called w
         for i in range(self._hidden_neurons):
-            ei = 0
-            for j in range(self._output_neurons):
-                ei += output_error[j] * Y_derivative[j] * self.output_neurons_layer[j].get_m()[i]
+            self.hidden_neurons_layer[i].set_w(W[i])
 
-            hidden_error.append(ei)
-            update = eta * ei * H_derivative[i] * np.array(X)
-            self.hidden_neurons_layer[i].update_weight(update=update)
-        return hidden_error, output_error
+        for j in range(self._output_neurons):
+            self.output_neurons_layer[j].set_m(M.T[j])
 
     def predict(self, X, y):
         if self._output_act_func_ == 'regression':
@@ -176,10 +102,23 @@ class MLP(object):
     def classify(self, X, y):
         hitrate = 0
         for xi, target in zip(X, y):
-            Y = self.feedforward(xi=xi)[2] # array of Y
-            y_obtained = self.around(Y)
+            y_obtained = list()
+            xi = np.insert(xi, 0, -1)
+            H = list()
+
+            for i in range(self._hidden_neurons):
+                self.hidden_neurons_layer[i].activation(xi)
+                H.append(self.hidden_neurons_layer[i].get_h())
+
+            H = np.insert(H, 0, -1)
+            for j in range(self._output_neurons):
+                self.output_neurons_layer[j].activation(H)
+                y_obtained.append(self.output_neurons_layer[j].get_y())
+
+            y_obtained = self.around(y_obtained)
             if np.array_equal(y_obtained.astype(int), target):
                 hitrate += 1
+
         return hitrate / X.shape[0]
 
     def estimate(self, X, y):
@@ -198,14 +137,23 @@ class MLP(object):
                 Y.append(self.output_neurons_layer[j].get_y())
 
             y_obtained.append(Y)
+
         return mean_squared_error(y, y_obtained)
 
     def predictions(self, X):
         predictions = list()
 
         for xi in X:
-            self.feedforward(xi=xi)
-            predictions.append((self.output_neurons_layer[0].get_y()))
+            xi = np.insert(xi, 0, -1)
+            H = list()
+            for i in range(self._hidden_neurons):
+                self.hidden_neurons_layer[i].activation(xi)
+                H.append(self.hidden_neurons_layer[i].get_h())
+
+            H = np.insert(H, 0, -1)
+            for j in range(self._output_neurons):
+                self.output_neurons_layer[j].activation(H)
+                predictions.append((self.output_neurons_layer[0].get_y()))
 
         return predictions
 
@@ -244,9 +192,14 @@ class MLP(object):
                 y.append(1)
         return np.array(y)
 
-    @staticmethod
-    def eta_decay(self, current_epoch, current_eta):
-        if current_epoch <= self._eta_decay_lim:
-            return self._eta_max * pow((self._eta_min / self._eta_max),
-                                       (current_epoch / self._eta_decay_lim))
-        return current_eta
+    def join_weights(self):
+        W = list()
+        M = list()
+        for i in range(self._hidden_neurons):
+            W.append(self.hidden_neurons_layer[i].get_w().T)
+
+        for j in range(self._output_neurons):
+            M.append(self.output_neurons_layer[j].get_m().T)
+
+        return np.asarray(W), np.asarray(M)
+

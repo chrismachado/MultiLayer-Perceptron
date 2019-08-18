@@ -132,9 +132,11 @@ class Dataset(object):
         print("myself, generating data...")
 
         N = 500
-        X = np.random.normal(size=N)
-        X = X.reshape((N, 1))
         noise = 0.25
+
+        X = np.random.normal(size=N) + np.random.randn(N)
+        X = X.reshape((N, 1))
+
         randoms = np.random.uniform(-noise, noise, N)
         noises = np.reshape(randoms, newshape=(N, 1))
         y = 3.0 * np.sin(X) + 1 + noises

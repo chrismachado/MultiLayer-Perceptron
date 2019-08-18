@@ -14,6 +14,7 @@ class OutputNeuron(object):
 
     def activation(self, H):
         self._uj = np.dot(self._m[1:], H[1: ]) + self._m[0]*H[0] #mTh + teta
+
         self._y = self._activation_func.function(self._uj)
         self._y_derivative = self._activation_func.derivative(self._uj)
 

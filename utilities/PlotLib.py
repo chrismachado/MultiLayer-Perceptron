@@ -61,11 +61,11 @@ class PlotUtil(object):
         plt.show()
 
     @staticmethod
-    def plot_regression(X, y, clf, problem, act_func):
+    def plot_regression(X, y, clf, problem, act_func, classifier):
         plt.scatter(X, y)
         plt.scatter(X, clf.predictions(X), c='r', linestyle='-')
-        plt.title("Regression → MLP")
-        plt.savefig("images/curve(%s)-%s.png" % (problem, act_func), format='png')
+        plt.title("Regression → %s (%s,%s,%s)" % (classifier, clf._input_neurons,  clf._hidden_neurons,  clf._output_neurons))
+        plt.savefig("images/curve-%s(%s)-%s-(%s,%s,%s).png" % (classifier, problem, act_func, clf._input_neurons,  clf._hidden_neurons,  clf._output_neurons), format='png')
         plt.xlabel("X")
         plt.ylabel("Y")
         plt.show()

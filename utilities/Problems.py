@@ -19,20 +19,23 @@ class Problem(object):
         if self.__problem == 'iris':
             X, y = self.dataset.iris()
 
-        if self.__problem == 'column':
+        elif self.__problem == 'column':
             X, y = self.dataset.vertebral_column()
 
-        if self.__problem == 'breast_cancer':
+        elif self.__problem == 'breast_cancer':
             X, y = self.dataset.breast_cancer()
 
-        if self.__problem == 'dermatology':
+        elif self.__problem == 'dermatology':
             X, y = self.dataset.dermatology()
 
-        if self.__problem == 'xor':
+        elif self.__problem == 'xor':
             X, y = self.dataset.xor()
 
-        if self.__problem == 'regression':
+        elif self.__problem == 'regression':
             X, y = self.dataset.regression()
+        else:
+            print("Invalid dataset selected.")
+            exit(0)
 
         if self.__act_func == 'tanh':
             aux = -1

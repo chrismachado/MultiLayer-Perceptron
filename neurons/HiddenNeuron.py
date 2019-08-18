@@ -27,6 +27,9 @@ class HiddenNeuron(object):
     def get_w(self):
         return self._w
 
+    def set_w(self, w):
+        self._w = w
+
     def get_wi(self, p):
         return self._w[p]
 
