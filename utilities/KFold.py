@@ -1,13 +1,13 @@
 import numpy as np
 import time
 
+
 class KFold(object):
 
     def __init__(self, k=5, hidden_neurons_list=(2, 4, 6, 8, 10)):
         self.k = k
         self.hidden_neurons_list = hidden_neurons_list
         self.generic_result = list()
-        count = 0
 
     def k_split(self, X, y):
         X_splitted = np.split(X, self.k)
@@ -29,10 +29,10 @@ class KFold(object):
             clf.fit(X=X_splitted_train_without_k,
                     y=y_splitted_train_without_k)
 
-            accuracy_n_hidden.append(clf.classify(X=X_splitted_train[i],
+            accuracy_n_hidden.append(clf.predict(X=X_splitted_train[i],
                                                   y=y_splitted_train[i]))
 
-            print("Hit rate %.2f%%" % (accuracy_n_hidden[-1] * 100))
+            print("Computation %.2f" % accuracy_n_hidden[-1])
 
         return np.mean(accuracy_n_hidden), accuracy_n_hidden
 
@@ -46,7 +46,7 @@ class KFold(object):
         print("Executing %d-Fold Cross Validation" % self.k)
 
         for hidden_neurons in self.hidden_neurons_list:
-            print("\tHidden neuron size : %d" % (hidden_neurons))
+            print("\tHidden neuron size : %d" % hidden_neurons)
 
             clf._hidden_neurons = hidden_neurons
 
@@ -56,7 +56,13 @@ class KFold(object):
 
             accuracy_hidden_value.append(ahv)
             accuracy_hidden_list.append(ahl)
-            print("\t\tAccuracy : %.2f%%" % float((ahv * 100)))
+
+            if clf._output_act_func_ == 'regression':
+                print("\t\tMSE : %.5f" % ahv)
+                print("\t\tRMSE : %.5f" % np.sqrt(ahv))
+            else:
+                print("\t\tAccuracy : %.2f" % ahv)
+
             print("\t\tArray → %s" % ahl)
 
         best = accuracy_hidden_value.index(max(accuracy_hidden_value))
@@ -72,7 +78,7 @@ class KFold(object):
             f.write("TIME: %3.2f s\n" % timerf)
             f.write("CROSS VALIDATION \n")
             f.write("BEST HIDDEN SIZE: %2d \n" % self.hidden_neurons_list[best])
-            f.write("ACCURACY : %2.2f%%\n\n" % (np.mean(accuracy_hidden_value) * 100))
+            f.write("ACCURACY : %2.2f\n\n" % (np.mean(accuracy_hidden_value) * 100))
             f.write("|========================================|\n| ")
             for i in range(len(self.hidden_neurons_list)):
                 f.write("%02d\t |" % self.hidden_neurons_list[i])

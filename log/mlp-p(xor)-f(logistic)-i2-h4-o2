@@ -8,10 +8,10 @@ OUTPUT SIZE: 02
 
 EPOCHS: 050
 
-TIME:  0.49m
+TIME:  0.27m
 
-BEST plotIZATION:  2
-WORST plotIZATION:  2
+BEST REALIZATION:  1
+WORST REALIZATION:  1
 
 CROSS VALIDATION (BEST)
 |========================================|
@@ -19,11 +19,10 @@ CROSS VALIDATION (BEST)
 |100.00	 |100.00	 |100.00	 |
 |========================================|
 
-=> plotização 1 : Taxa de acerto 100.00%
-=> plotização 2 : Taxa de acerto 100.00%
+=> Realização 1 : Taxa de acerto 100.00%
 
 RESULTADO FINAL
 |========================================|
-|==  Acurácia : 100.00%                   |
-|==  Desvio Padrão : 0.000000%           |
+|==  Acurácia : 100.00                  |
+|==  Desvio Padrão : 0.000000          |
 |========================================|

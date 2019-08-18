@@ -165,28 +165,40 @@ class MLP(object):
             update = eta * ei * H_derivative[i] * np.array(X)
             self.hidden_neurons_layer[i].update_weight(update=update)
         return hidden_error, output_error
+
+    def predict(self, X, y):
+        if self._output_act_func_ == 'regression':
+            return self.estimate(X, y)
+        elif self._output_act_func_ == 'logistic' or self._output_act_func_ == 'tanh':
+            return self.classify(X, y)
+
     def classify(self, X, y):
         hitrate = 0
         for xi, target in zip(X, y):
-            y_obtained = self.around(self.predict(xi=xi))
-
+            Y = self.feedforward(xi=xi)[2] # array of Y
+            y_obtained = self.around(Y)
             if np.array_equal(y_obtained.astype(int), target):
                 hitrate += 1
         return hitrate / X.shape[0]
 
-    #TODO fazer funcao de estimaçao para neuronio de regressao
-    def estimate(self, X):
-        y_final = list()
+    def estimate(self, X, y):
+        mse = list()
+
         for xi in X:
             self.feedforward(xi=xi)
             y_obtained = self.output_neurons_layer[0].get_y()
-            y_final.append(y_obtained)
+            mse.append(0.5 * (y - y_obtained) ** 2.0)
 
-        return y_final
+        return np.sum(mse) / X.shape[0]
 
-    def predict(self, xi):
-        Y = self.feedforward(xi=xi)[2]
-        return Y
+    def predictions(self, X):
+        predictions = list()
+
+        for xi in X:
+            self.feedforward(xi=xi)
+            predictions.append((self.output_neurons_layer[0].get_y()))
+
+        return predictions
 
     def around(self, prediction_):
         prediction = cp.deepcopy(prediction_)
@@ -204,13 +216,23 @@ class MLP(object):
     def predict_1D(self, X):
         y = list()
         for x in X:
-            y_obtained = self.around(self.predict(xi=x))
+            # Y = np.array(self.feedforward(xi=x)[2])
+            Y = list()
+            self.feedforward(x)
+            for j in range(self._output_neurons):
+                Y.append(self.output_neurons_layer[j].get_y())
+            y.append(Y)
+        return np.array(y)
 
+    def boundary_decision(self, X):
+        y = list()
+        for x in X:
+            Y = self.feedforward(xi=x)[2] # array of Y
+            y_obtained = self.around(Y)
             if np.array_equal(y_obtained.astype(int), [0, 1]):
                 y.append(0)
             elif np.array_equal(y_obtained.astype(int), [1, 0]):
                 y.append(1)
-
         return np.array(y)
 
     @staticmethod

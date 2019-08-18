@@ -17,7 +17,7 @@ class PlotUtil(object):
 
         print("\nCreating colormap...", end=' ')
         for x1, x2 in Z:
-            predict = clf.around(clf.predict([x1, x2]))
+            predict = clf.around(clf.feedfoward([x1, x2])[2])
 
             if np.array_equal(predict, np.array([1, aux])):
                 plt.scatter(x1, x2, c='#800D9F', s=s, marker=marker)
@@ -48,17 +48,24 @@ class PlotUtil(object):
         # Generate a grid of points with distance h between them
         xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
 
-        # Predict the function value for the whole gid
+        # Predict the function value for the whole grid
         Z = clf.predict_1D(np.c_[xx.ravel(), yy.ravel()])
-        Z = Z.reshape(xx.shape)
+        print(Z)
+        Z0 = Z[:, 0].reshape(xx.shape)
+        Z1 = Z[:, 1].reshape(xx.shape)
 
         # Plot the contour and training examples
-        plt.contourf(xx, yy, Z, cmap=plt.cm.Spectral)
+        plt.contourf(xx, yy, Z0, cmap=plt.cm.Spectral, levels=2)
+        plt.contourf(xx, yy, Z1, cmap=plt.cm.Spectral, levels=2)
         plt.scatter(X[:, 0], X[:, 1], c=y, cmap=plt.cm.Spectral)
         plt.show()
 
     @staticmethod
-    def plot_regression(X, y, clf):
+    def plot_regression(X, y, clf, problem, act_func):
         plt.scatter(X, y)
-        plt.scatter(X, clf.estimate(X), c='r', linestyle='-')
+        plt.scatter(X, clf.predictions(X), c='r', linestyle='-')
+        plt.title("Regression → MLP")
+        plt.savefig("images/curve(%s)-%s.png" % (problem, act_func), format='png')
+        plt.xlabel("X")
+        plt.ylabel("Y")
         plt.show()

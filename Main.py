@@ -16,23 +16,15 @@ from utilities.Realization import Realization
 from matplotlib import pyplot as plt
 from utilities.PlotLib import PlotUtil
 
-#%config InlineBackend.figure_format = 'retina'
-plt.style.use('bmh')
-
 
 def main():
 
-    hidden_act_func = 'logistic'
-    # output_act_func = 'logistic'
+    hidden_act_func = 'tanh'
+    # output_act_func = 'regression'
+    output_act_func = 'logistic'
+    # desc_prob = 'regression'
+    desc_prob = 'xor'
 
-    output_act_func = 'regression'
-    desc_prob = 'regression'
-
-    # desc_prob = 'xor'
-    # desc_prob = 'column'
-    # desc_prob = 'iris'
-    # desc_prob = 'dermatology'
-    # desc_prob = 'breast_cancer'
     prob = Problem(problem=desc_prob, act_func=output_act_func)
     X, y = prob.get_dataset()
 
@@ -43,26 +35,12 @@ def main():
     mlp = MLP(input_size, hidden_size, output_size,
               hidden_act_func=hidden_act_func,
               output_act_func=output_act_func,
-              epoch=500)
+              epoch=40)
 
-    # Realization(problem=desc_prob, k=5).execution(X=X,
-    #                                          y=y,
-    #                                          clf=mlp,
-    #                                          num=2)
-
-
-    Xold, yold = cp.deepcopy(X), cp.deepcopy(y)
-
-    Xtrain, Xtest, ytrain, ytest = train_test_split(X, y, test_size=0.5, random_state=0)
-
-    mlp.fit(Xtrain, ytrain)
-
-    PlotUtil.plot_regression(Xold, yold, clf=mlp)
-    # yguess = mlp.estimate(Xtest)
-    # plt.scatter(Xtest, ytest)
-    # plt.plot(Xtest, yguess, 'r.')
-
-    # plt.show()
+    Realization(problem=desc_prob, k=1).execution(X=X,
+                                             y=y,
+                                             clf=mlp,
+                                             num=1)
 
 if __name__ == '__main__':
     main()

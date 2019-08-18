@@ -18,13 +18,15 @@ class Realization(object):
         self.k = k
 
     def execution(self, X, y, clf, num=20):
-        balanced_split = self.balance(k=self.k, start=0.2, size=X.shape[0])
+        balanced_split = self.vu.balance(problem=self.problem, k=self.k, start=0.2, size=X.shape[0])
+
         accuracy = list()
 
         # hidden_type = (9, 10, 11, 12, 13)
         # hidden_type = (2, 4, 6, 8, 10)
-        hidden_type = (4, 6, 8)
+        # hidden_type = (4, 6, 8)
         # hidden_type = (3, 5, 7, 9, 11)
+        hidden_type = (1, 2, 3, 4)
 
         kfold = KFold(k=self.k, hidden_neurons_list=hidden_type)
 
@@ -33,7 +35,7 @@ class Realization(object):
         weights_m = list()
         best_perform = list()
         hidden_accuracy_list = list()
-        hidden_hitrate_list = list()
+        hidden_computation_list = list()
         generic_result_list = list()
 
         X_plot = cp.deepcopy(X)
@@ -43,10 +45,11 @@ class Realization(object):
             self.vu.shuffle_(X, y)
 
             print("Execution [%d]" % (_ + 1))
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=balanced_split, stratify=y)
+
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=balanced_split)
 
             timer = time.time()
-            hidden_neuron, hidden_accuracy, hidden_hitrate = kfold.best_result(clf=clf,
+            hidden_neuron, hidden_accuracy, hidden_computation = kfold.best_result(clf=clf,
                                                                                X_train=X_train,
                                                                                y_train=y_train,
                                                                                iteration=_ + 1)
@@ -54,7 +57,7 @@ class Realization(object):
 
             best_perform.append(hidden_neuron)
             hidden_accuracy_list.append(hidden_accuracy)
-            hidden_hitrate_list.append(hidden_hitrate)
+            hidden_computation_list.append(hidden_computation)
             generic_result_list.append(kfold.generic_result)
 
             clf._hidden_neuron = hidden_neuron
@@ -66,9 +69,9 @@ class Realization(object):
             print("\tFinish fitting.")
 
             print("\tStarting test...")
-            hitrate = clf.classify(X_test, y_test)
-            accuracy.append(hitrate)
-            print("\tHit rate %.2f%%" % (hitrate * 100))
+            computation = clf.predict(X_test, y_test)
+            accuracy.append(computation)
+            print("\tHit rate %.5f" % computation )
 
             print("-------------------------------------------------------")
 
@@ -78,20 +81,19 @@ class Realization(object):
         clf.hidden_neurons_layer = weights_w[best_index]
         clf.output_neurons_layer = weights_m[best_index]
 
-        if X.shape[1] == 2 and self.problem == 'xor':
-            plt.plot(X_plot[:50, 0], X_plot[:50, 1], 'bo', mec='k', markersize=5)
-            plt.plot(X_plot[50:100, 0], X_plot[50:100, 1], 'y^', mec='k', markersize=5)
-            plt.plot(X_plot[100:150, 0], X_plot[100:150, 1], 'y^', mec='k', markersize=5)
-            plt.plot(X_plot[150:, 0], X_plot[150:, 1], 'bo', mec='k', markersize=5)
+        if clf._output_act_func_ == 'regression':
+            print("MSE médio            : %4.2f" % np.mean(accuracy))
+            print("RMSE médio            : %4.2f" % np.mean(np.sqrt(accuracy)))
+            PlotUtil.plot_regression(X_plot, y_plot, clf, problem=self.problem, act_func=clf._output_act_func_)
+        else:
+            print("Accuracy            : %4.2f" % np.mean(accuracy))
+            if 1 <= clf._output_neurons <= 2:
+                PlotUtil.plot_decision_boundary(X_test, clf.boundary_decision(X_test), clf)
 
-            PlotUtil().plot_decision(X=X_plot, clf=clf, problem=self.problem, act_func=clf._output_act_func_, X_highlights=X_test)
-
-        print("Accuracy      : %4.2f%%" % float((np.mean(accuracy) * 100)))
-        print("Desvio Padrão : %.6f%%" % float((np.std(accuracy) * 100)))
+        print("Standard Deviations : %.6f" % (np.std(accuracy)))
 
         # Write in file
-
-        with open("log/mlp-p(%s)-f(%s)-i%s-h%s-o%s" % (self.problem,
+        with open("log/mlp-p(%s)-f(%s)-i%s-h%s-o%s.txt" % (self.problem,
                                                        clf._output_act_func_,
                                                        X.shape[1],
                                                        best_perform[best_index],
@@ -110,8 +112,8 @@ class Realization(object):
 
             f.write("TIME: %5.2fm\n\n" % (sum(timer_list) / 60))
 
-            f.write("BEST plotIZATION: %2d\n" % (best_index + 1))
-            f.write("WORST plotIZATION: %2d\n\n" % (worst_index + 1))
+            f.write("BEST REALIZATION: %2d\n" % (best_index + 1))
+            f.write("WORST REALIZATION: %2d\n\n" % (worst_index + 1))
 
             f.write("CROSS VALIDATION (BEST)\n")
             f.write("|========================================|\n| ")
@@ -119,25 +121,25 @@ class Realization(object):
                 f.write("%02d\t |" % kfold.hidden_neurons_list[i])
             f.write("\n|")
             for i in range(len(kfold.generic_result)):
-                f.write("%.2f\t |" % (generic_result_list[best_index][i] * 100))
+                f.write("%4.2f\t |" % (generic_result_list[best_index][i] * 100))
             f.write("\n|========================================|\n\n")
-            for i in range(len(accuracy)):
-                f.write("=> plotização %d : Taxa de acerto %.2f%%\n" % ((i + 1), (accuracy[i]) * 100))
+
+            if self.problem == 'regression':
+                for i in range(len(accuracy)):
+                    f.write("=> Realização %d : MSE %.5f | RMSE %.5f  \n" % ((i + 1), accuracy[i], np.sqrt(accuracy[i])))
+            else:
+                for i in range(len(accuracy)):
+                    f.write("=> Realização %d : Taxa de acerto %.2f  \n" % ((i + 1), (accuracy[i]) * 100))
 
             f.write("\nRESULTADO FINAL\n")
             f.write("|========================================|\n")
-            f.write("|==  Acurácia : %4.2f%%                   |\n" % (np.mean(accuracy) * 100))
-            f.write("|==  Desvio Padrão : %.6f%%           |\n" % np.std(accuracy))
+            if self.problem == 'regression':
+                f.write("|==  MSE médio : %4.2f                     |\n" % (np.mean(accuracy)))
+                mrmse = np.sum(np.sqrt(np.array(accuracy)))
+                f.write("|==  RMSE médio : %4.2f                     |\n" % mrmse)
+                f.write("|==  Desvio Padrão : %.6f             |\n" % np.std(accuracy))
+            else:
+                f.write("|==  Acurácia : %4.2f                    |\n" % (np.mean(accuracy) * 100))
+                f.write("|==  Desvio Padrão : %.6f            |\n" % np.std(accuracy))
             f.write("|========================================|\n")
 
-    def balance(self, size, k=5, start=0.2):
-        print("Balancing [%s] test size before executions..." % self.problem)
-        balanced_division = start
-        while (1):
-            if math.floor(size * (1 - balanced_division)) % k == 0:
-                break
-            balanced_division += 0.01
-
-        print("N Samples %d\t|\tEquivalent %2.2f%%" % (math.floor(size * (1 - balanced_division)),
-                                                       (100 - 100 * balanced_division)))
-        return balanced_division

@@ -5,8 +5,11 @@
     <file url="file://$PROJECT_DIR$/log/mlp-p(column)-f(logistic)-i5-h9-o3" charset="windows-1252" />
     <file url="file://$PROJECT_DIR$/log/mlp-p(dermatology)-f(logistic)-i34-h10-o6" charset="windows-1252" />
     <file url="file://$PROJECT_DIR$/log/mlp-p(iris)-f(logistic)-i4-h6-o3" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/log/mlp-p(regression)-f(regression)-i1-h2-o1" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/log/mlp-p(regression)-f(regression)-i1-h4-o1" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/log/mlp-p(regression)-f(regression)-i1-h4-o1.txt" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/log/mlp-p(regression)-f(regression)-i1-h4-o1.txt" charset="windows-1252" />
     <file url="file://$PROJECT_DIR$/log/mlp-p(xor)-f(logistic)-i2-h4-o2" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/log/mlp-p(xor)-f(logistic)-i2-h6-o2" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/log/mlp-p(xor)-f(logistic)-i2-h8-o2" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/log/mlp-p(xor)-f(regression)-i2-h4-o2" charset="windows-1252" />
   </component>
 </project>

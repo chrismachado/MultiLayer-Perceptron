@@ -6,8 +6,8 @@ class OutputNeuron(object):
                  hidden_neurons_size,
                  output_neurons_size):
         self._activation_func = activation_func
-        self._m = np.zeros(shape=(hidden_neurons_size + 1), dtype=float)
-        # self._m = np.random.randn(hidden_neurons_size + 1) * np.sqrt(2 / (hidden_neurons_size + output_neurons_size + 1) )
+        # self._m = np.zeros(shape=(hidden_neurons_size + 1), dtype=float)
+        self._m = np.random.randn(hidden_neurons_size + 1) * np.sqrt(2 / (hidden_neurons_size + output_neurons_size + 1) )
         self._uj = None
         self._y = None
         self._y_derivative = None

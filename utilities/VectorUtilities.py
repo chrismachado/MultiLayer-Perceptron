@@ -33,3 +33,15 @@ class VectorUtilities(object):
                 imin_ = index
                 min_acc_value = accuracy[index]
         return imax_, imin_
+    @staticmethod
+    def balance(problem, size, k=5, start=0.2):
+        print("Balancing [%s] test size before executions..." % problem)
+        balanced_division = start
+        while True:
+            if np.floor(size * (1 - balanced_division)) % k == 0:
+                break
+            balanced_division += 0.01
+
+        print("N Samples %d\t|\tEquivalent %2.2f%%" % (np.floor(size * (1 - balanced_division)),
+                                                       (100 - 100 * balanced_division)))
+        return balanced_division
