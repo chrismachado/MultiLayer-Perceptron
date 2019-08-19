@@ -1,0 +1,51 @@
+DATASET USED: regression
+HIDDEN ACTIVATION FUNCTION: logistic
+OUTPUT ACTIVATION FUNCTION: regression
+
+INPUT SIZE: 01
+HIDDEN SIZE: 12
+OUTPUT SIZE: 01
+
+EPOCHS: None
+
+TIME:  0.28m
+
+BEST REALIZATION:  4
+WORST REALIZATION: 19
+
+CROSS VALIDATION (BEST)
+|========================================|
+| 10	 |12	 |14	 |16	 |18	 |20	 |22	 |24	 |26	 |28	 |30	 |
+|2.160608	 |24.258997	 |1.970897	 |14.474933	 |2.453326	 |18.694582	 |10.524033	 |16.327419	 |2.767180	 |6.960512	 |6.123388	 |
+|========================================|
+
+=> Realização 1 : MSE 0.01948 | RMSE 0.13958  
+=> Realização 2 : MSE 0.02213 | RMSE 0.14875  
+=> Realização 3 : MSE 0.02181 | RMSE 0.14767  
+=> Realização 4 : MSE 0.02680 | RMSE 0.16370  
+=> Realização 5 : MSE 0.02020 | RMSE 0.14213  
+=> Realização 6 : MSE 0.02128 | RMSE 0.14588  
+=> Realização 7 : MSE 0.02024 | RMSE 0.14227  
+=> Realização 8 : MSE 0.02111 | RMSE 0.14530  
+=> Realização 9 : MSE 0.01905 | RMSE 0.13804  
+=> Realização 10 : MSE 0.01973 | RMSE 0.14047  
+=> Realização 11 : MSE 0.02010 | RMSE 0.14177  
+=> Realização 12 : MSE 0.02450 | RMSE 0.15651  
+=> Realização 13 : MSE 0.02208 | RMSE 0.14859  
+=> Realização 14 : MSE 0.01892 | RMSE 0.13755  
+=> Realização 15 : MSE 0.01954 | RMSE 0.13980  
+=> Realização 16 : MSE 0.01840 | RMSE 0.13565  
+=> Realização 17 : MSE 0.01929 | RMSE 0.13887  
+=> Realização 18 : MSE 0.02060 | RMSE 0.14352  
+=> Realização 19 : MSE 0.01788 | RMSE 0.13370  
+=> Realização 20 : MSE 0.02106 | RMSE 0.14513  
+
+RESULTADO FINAL
+|========================================|
+|==  MSE: 0.020710                     |
+|==  RMSE: 2.874893                     |
+|==  Standard Deviation : 0.002039             |
+|========================================|
+
+CONFUSION MATRIX
+It don't have confusion matrix

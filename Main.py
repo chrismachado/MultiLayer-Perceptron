@@ -19,28 +19,35 @@ from utilities.PlotLib import PlotUtil
 
 def main():
 
-    hidden_act_func = 'logistic'
-    output_act_func = 'regression'
-    # output_act_func = 'logistic'
-    desc_prob = 'regression'
-    # desc_prob = 'xor'
+    hidden_act_func = 'tanh'
+    output_act_func = 'tanh'
+    desc_prob = ['xor', 'iris', 'column', 'breast_cancer', 'dermatology']
+    p = desc_prob[0]
 
-    prob = Problem(problem=desc_prob, act_func=output_act_func)
-    X, y = prob.get_dataset()
+    for p in desc_prob:
+        prob = Problem(problem=p,
+                       act_func=output_act_func)
+        X, y = prob.get_dataset()
 
-    input_size = X.shape[1]
-    hidden_size = 4
-    output_size = y[0].shape[0]
+        input_size = X.shape[1]
+        hidden_size = (9, 10, 11, 12, 13)
+        output_size = y[0].shape[0]
 
-    mlp = MLP(input_size, hidden_size, output_size,
-              hidden_act_func=hidden_act_func,
-              output_act_func=output_act_func,
-              epoch=100)
+        mlp = MLP(input_size, None, output_size,
+                  hidden_act_func=hidden_act_func,
+                  output_act_func=output_act_func,
+                  epoch=50)
 
-    Realization(classifier='mlp', problem=desc_prob, k=5, hidden_size=(2, 3, 4)).execution(X=X,
+        Realization(classifier='mlp',
+                    problem=p, k=5,
+                    hidden_size=hidden_size).execution(X=X,
                                              y=y,
                                              clf=mlp,
-                                             num=1)
+                                             num=20)
+
+
+
+
 if __name__ == '__main__':
     main()
 

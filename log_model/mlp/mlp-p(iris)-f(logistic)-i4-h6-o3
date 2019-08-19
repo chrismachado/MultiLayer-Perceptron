@@ -1,28 +1,28 @@
-DATASET USED: column
+DATASET USED: iris
 HIDDEN ACTIVATION FUNCTION: logistic
 OUTPUT ACTIVATION FUNCTION: logistic
 
-INPUT SIZE: 05
-HIDDEN SIZE: 04
+INPUT SIZE: 04
+HIDDEN SIZE: 06
 OUTPUT SIZE: 03
 
 EPOCHS: 100
 
-TIME:  0.80m
+TIME:  0.61m
 
-BEST plotIZATION:  1
-WORST plotIZATION:  1
+BEST REALIZATION:  1
+WORST REALIZATION:  1
 
 CROSS VALIDATION (BEST)
 |========================================|
-| 04	 |06	 |08	 |
-|67.23	 |65.96	 |67.23	 |
+| 04	 |06	 |08	 |10	 |
+|77.500000	 |88.333333	 |87.500000	 |86.666667	 |
 |========================================|
 
-=> plotização 1 : Taxa de acerto 62.67%
+=> Realização 1 : Computation 90.00  
 
 RESULTADO FINAL
 |========================================|
-|==  Acurácia : 62.67%                   |
-|==  Desvio Padrão : 0.000000%           |
+|==  Acurácia : 90.00                    |
+|==  Standard Deviation : 0.000000            |
 |========================================|

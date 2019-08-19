@@ -1,0 +1,52 @@
+DATASET USED: column
+HIDDEN ACTIVATION FUNCTION: tanh
+OUTPUT ACTIVATION FUNCTION: tanh
+
+INPUT SIZE: 05
+HIDDEN SIZE: 12
+OUTPUT SIZE: 03
+
+EPOCHS: 50
+
+TIME: 21.67m
+
+BEST REALIZATION: 20
+WORST REALIZATION:  9
+
+CROSS VALIDATION (BEST)
+|========================================|
+| 09	 |10	 |11	 |12	 |13	 |
+|66.808511	 |69.787234	 |68.510638	 |74.468085	 |69.787234	 |
+|========================================|
+
+=> Realização 1 : Computation 73.33  
+=> Realização 2 : Computation 73.33  
+=> Realização 3 : Computation 62.67  
+=> Realização 4 : Computation 65.33  
+=> Realização 5 : Computation 74.67  
+=> Realização 6 : Computation 72.00  
+=> Realização 7 : Computation 61.33  
+=> Realização 8 : Computation 74.67  
+=> Realização 9 : Computation 57.33  
+=> Realização 10 : Computation 62.67  
+=> Realização 11 : Computation 68.00  
+=> Realização 12 : Computation 78.67  
+=> Realização 13 : Computation 69.33  
+=> Realização 14 : Computation 73.33  
+=> Realização 15 : Computation 58.67  
+=> Realização 16 : Computation 68.00  
+=> Realização 17 : Computation 72.00  
+=> Realização 18 : Computation 61.33  
+=> Realização 19 : Computation 68.00  
+=> Realização 20 : Computation 84.00  
+
+RESULTADO FINAL
+|========================================|
+|==  Acurácia : 68.93                    |
+|==  Standard Deviation : 0.067607            |
+|========================================|
+
+CONFUSION MATRIX
+[[ 3  2  2]
+ [ 1 39  3]
+ [ 0  4 21]]

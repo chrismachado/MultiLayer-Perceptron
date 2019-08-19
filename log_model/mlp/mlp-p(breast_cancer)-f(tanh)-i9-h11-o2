@@ -1,0 +1,51 @@
+DATASET USED: breast_cancer
+HIDDEN ACTIVATION FUNCTION: tanh
+OUTPUT ACTIVATION FUNCTION: tanh
+
+INPUT SIZE: 09
+HIDDEN SIZE: 11
+OUTPUT SIZE: 02
+
+EPOCHS: 50
+
+TIME: 47.14m
+
+BEST REALIZATION: 13
+WORST REALIZATION:  1
+
+CROSS VALIDATION (BEST)
+|========================================|
+| 09	 |10	 |11	 |12	 |13	 |
+|95.779817	 |96.146789	 |96.330275	 |96.146789	 |95.963303	 |
+|========================================|
+
+=> Realização 1 : Computation 94.81  
+=> Realização 2 : Computation 97.40  
+=> Realização 3 : Computation 95.45  
+=> Realização 4 : Computation 96.10  
+=> Realização 5 : Computation 96.10  
+=> Realização 6 : Computation 96.75  
+=> Realização 7 : Computation 98.70  
+=> Realização 8 : Computation 98.05  
+=> Realização 9 : Computation 96.75  
+=> Realização 10 : Computation 95.45  
+=> Realização 11 : Computation 95.45  
+=> Realização 12 : Computation 97.40  
+=> Realização 13 : Computation 99.35  
+=> Realização 14 : Computation 98.05  
+=> Realização 15 : Computation 96.10  
+=> Realização 16 : Computation 95.45  
+=> Realização 17 : Computation 96.75  
+=> Realização 18 : Computation 96.75  
+=> Realização 19 : Computation 96.75  
+=> Realização 20 : Computation 98.70  
+
+RESULTADO FINAL
+|========================================|
+|==  Acurácia : 96.82                    |
+|==  Standard Deviation : 0.012303            |
+|========================================|
+
+CONFUSION MATRIX
+[[104   1]
+ [  1  48]]

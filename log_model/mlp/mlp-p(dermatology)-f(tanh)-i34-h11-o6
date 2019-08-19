@@ -1,0 +1,55 @@
+DATASET USED: dermatology
+HIDDEN ACTIVATION FUNCTION: tanh
+OUTPUT ACTIVATION FUNCTION: tanh
+
+INPUT SIZE: 34
+HIDDEN SIZE: 11
+OUTPUT SIZE: 06
+
+EPOCHS: 50
+
+TIME: 34.01m
+
+BEST REALIZATION: 20
+WORST REALIZATION:  2
+
+CROSS VALIDATION (BEST)
+|========================================|
+| 09	 |10	 |11	 |12	 |13	 |
+|95.789474	 |94.035088	 |95.789474	 |95.789474	 |95.789474	 |
+|========================================|
+
+=> Realização 1 : Computation 98.77  
+=> Realização 2 : Computation 92.59  
+=> Realização 3 : Computation 93.83  
+=> Realização 4 : Computation 96.30  
+=> Realização 5 : Computation 96.30  
+=> Realização 6 : Computation 95.06  
+=> Realização 7 : Computation 98.77  
+=> Realização 8 : Computation 97.53  
+=> Realização 9 : Computation 98.77  
+=> Realização 10 : Computation 93.83  
+=> Realização 11 : Computation 96.30  
+=> Realização 12 : Computation 95.06  
+=> Realização 13 : Computation 100.00  
+=> Realização 14 : Computation 97.53  
+=> Realização 15 : Computation 97.53  
+=> Realização 16 : Computation 98.77  
+=> Realização 17 : Computation 97.53  
+=> Realização 18 : Computation 97.53  
+=> Realização 19 : Computation 97.53  
+=> Realização 20 : Computation 100.00  
+
+RESULTADO FINAL
+|========================================|
+|==  Acurácia : 96.98                    |
+|==  Standard Deviation : 0.020088            |
+|========================================|
+
+CONFUSION MATRIX
+[[25  0  0  0  0  0]
+ [ 0  9  0  0  0  0]
+ [ 0  0 23  0  0  0]
+ [ 0  0  0 12  0  0]
+ [ 0  0  0  0 11  0]
+ [ 0  0  0  0  0  1]]

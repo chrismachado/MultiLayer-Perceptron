@@ -114,7 +114,7 @@ class Dataset(object):
             if 50 <= i < 100:
                 X[i][0] = 0 + np.random.uniform(-noise, noise)
                 X[i][1] = 1 + np.random.uniform(-noise, noise)
-                y[i][0] = 1
+                y[i][1] = 1
 
             if 100 <= i < 150:
                 X[i][0] = 1 + np.random.uniform(-noise, noise)
@@ -124,7 +124,7 @@ class Dataset(object):
             if i >= 150:
                 X[i][0] = 1 + np.random.uniform(-noise, noise)
                 X[i][1] = 1 + np.random.uniform(-noise, noise)
-                y[i][1] = 1
+                y[i][0] = 1
 
         return X, y
 
@@ -139,7 +139,8 @@ class Dataset(object):
 
         randoms = np.random.uniform(-noise, noise, N)
         noises = np.reshape(randoms, newshape=(N, 1))
-        y = 3.0 * np.sin(X) + 1 + noises
+        y = 3.0 * np.sin(X) + 1.0 + noises
+        y = 2.0 * np.sin(X) + 3.0 + noises
         y = y.reshape((N, 1))
         return X, y
 

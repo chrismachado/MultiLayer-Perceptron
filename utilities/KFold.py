@@ -64,18 +64,12 @@ class KFold(object):
             else:
                 print("\t\tAccuracy : %.6f" % ahv)
 
-            print("\t\tArray → %s" % ahl)
+            print("\t\tArray -> %s" % ahl)
 
         best = accuracy_hidden_value.index(max(accuracy_hidden_value))
         self.generic_result = accuracy_hidden_value
 
-        if self.hidden_neurons_list[0] % 2 == 0:
-            type_ = "par"
-        else:
-            type_ = "impar"
-
-        with open("kfold_log/kfcv-e%s-%s" % (iteration, type_), 'w') as f:
-
+        with open("log_kfold/kfcv-e%s" % iteration, 'w') as f:
             f.write("TIME: %3.2f s\n" % timerf)
             f.write("CROSS VALIDATION \n")
             f.write("BEST HIDDEN SIZE: %2d \n" % self.hidden_neurons_list[best])

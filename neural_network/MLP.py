@@ -175,8 +175,8 @@ class MLP(object):
 
     def classify(self, X, y):
         hitrate = 0
-        for xi, target in zip(X, y):
-            Y = self.feedforward(xi=xi)[2] # array of Y
+        for x, target in zip(X, y):
+            Y = self.feedfoward_output(x)
             y_obtained = self.around(Y)
             if np.array_equal(y_obtained.astype(int), target):
                 hitrate += 1
@@ -184,30 +184,48 @@ class MLP(object):
 
     def estimate(self, X, y):
         y_obtained = list()
-        for xi, target in zip(X, y):
-            xi = np.insert(xi, 0, -1)
-            H = list()
-            for i in range(self._hidden_neurons):
-                self.hidden_neurons_layer[i].activation(xi)
-                H.append(self.hidden_neurons_layer[i].get_h())
-
-            H = np.insert(H, 0, -1)
-            Y = list()
-            for j in range(self._output_neurons):
-                self.output_neurons_layer[j].activation(H)
-                Y.append(self.output_neurons_layer[j].get_y())
-
-            y_obtained.append(Y)
+        for x in X:
+            y_obtained.append(self.feedfoward_output(x))
         return mean_squared_error(y, y_obtained)
 
     def predictions(self, X):
         predictions = list()
-
-        for xi in X:
-            self.feedforward(xi=xi)
-            predictions.append((self.output_neurons_layer[0].get_y()))
-
+        for x in X:
+            predictions.append(self.feedfoward_output(x))
         return predictions
+
+    def predict_1D(self, X):
+        y = list()
+        for x in X:
+            y.append(self.feedfoward_output(x))
+        return np.array(y)
+
+    def boundary_decision(self, X):
+        y = list()
+        for x in X:
+            Y = self.feedfoward_output(x) # array of Y
+            y_obtained = self.around(Y)
+            if np.array_equal(y_obtained.astype(int), [0, 1]):
+                y.append(0)
+            elif np.array_equal(y_obtained.astype(int), [1, 0]):
+                y.append(1)
+        return np.array(y)
+
+    def feedfoward_output(self, x):
+        x = np.insert(x, 0, -1)
+        H = list()
+        for i in range(self._hidden_neurons):
+            self.hidden_neurons_layer[i].activation(x)
+            H.append(self.hidden_neurons_layer[i].get_h())
+
+        H = np.insert(H, 0, -1)
+
+        Y = list()
+        for j in range(self._output_neurons):
+            self.output_neurons_layer[j].activation(H)
+            Y.append(self.output_neurons_layer[j].get_y())
+
+        return np.asarray(Y)
 
     def around(self, prediction_):
         prediction = cp.deepcopy(prediction_)
@@ -221,28 +239,6 @@ class MLP(object):
                 else:
                     prediction[i] = 0
         return np.array(prediction, dtype=float)
-
-    def predict_1D(self, X):
-        y = list()
-        for x in X:
-            # Y = np.array(self.feedforward(xi=x)[2])
-            Y = list()
-            self.feedforward(x)
-            for j in range(self._output_neurons):
-                Y.append(self.output_neurons_layer[j].get_y())
-            y.append(Y)
-        return np.array(y)
-
-    def boundary_decision(self, X):
-        y = list()
-        for x in X:
-            Y = self.feedforward(xi=x)[2] # array of Y
-            y_obtained = self.around(Y)
-            if np.array_equal(y_obtained.astype(int), [0, 1]):
-                y.append(0)
-            elif np.array_equal(y_obtained.astype(int), [1, 0]):
-                y.append(1)
-        return np.array(y)
 
     @staticmethod
     def eta_decay(self, current_epoch, current_eta):

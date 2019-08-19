@@ -1,0 +1,32 @@
+DATASET USED: regression
+HIDDEN ACTIVATION FUNCTION: logistic
+OUTPUT ACTIVATION FUNCTION: regression
+
+INPUT SIZE: 01
+HIDDEN SIZE: 04
+OUTPUT SIZE: 01
+
+EPOCHS: 50
+
+TIME:  0.46m
+
+BEST REALIZATION:  1
+WORST REALIZATION:  1
+
+CROSS VALIDATION (BEST)
+|========================================|
+| 02	 |03	 |04	 |
+|27.294838	 |20.386421	 |63.033247	 |
+|========================================|
+
+=> Realização 1 : MSE 0.04775 | RMSE 0.21852  
+
+RESULTADO FINAL
+|========================================|
+|==  MSE: 0.047750                     |
+|==  RMSE: 0.218517                     |
+|==  Standard Deviation : 0.000000             |
+|========================================|
+
+CONFUSION MATRIX
+It don't have confusion matrix

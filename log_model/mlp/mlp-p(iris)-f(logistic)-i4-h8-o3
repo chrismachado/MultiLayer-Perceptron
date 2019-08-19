@@ -1,0 +1,28 @@
+DATASET USED: iris
+HIDDEN ACTIVATION FUNCTION: tanh
+OUTPUT ACTIVATION FUNCTION: logistic
+
+INPUT SIZE: 04
+HIDDEN SIZE: 08
+OUTPUT SIZE: 03
+
+EPOCHS: 100
+
+TIME:  0.67m
+
+BEST REALIZATION:  1
+WORST REALIZATION:  1
+
+CROSS VALIDATION (BEST)
+|========================================|
+| 04	 |06	 |08	 |10	 |
+|95.833333	 |91.666667	 |95.833333	 |95.000000	 |
+|========================================|
+
+=> Realização 1 : Computation 96.67  
+
+RESULTADO FINAL
+|========================================|
+|==  Acurácia : 96.67                    |
+|==  Standard Deviation : 0.000000            |
+|========================================|

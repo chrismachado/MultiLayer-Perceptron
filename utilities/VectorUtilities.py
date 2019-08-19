@@ -1,4 +1,5 @@
 import numpy as np
+from sklearn import preprocessing
 
 
 class VectorUtilities(object):
@@ -45,3 +46,12 @@ class VectorUtilities(object):
         print("N Samples %d\t|\tEquivalent %2.2f%%" % (np.floor(size * (1 - balanced_division)),
                                                        (100 - 100 * balanced_division)))
         return balanced_division
+
+    @staticmethod
+    def convert_labels(labels, n_classes):
+        label_binarizer = preprocessing.LabelBinarizer()
+        classes = list(range(n_classes))
+        label_binarizer.fit(classes)
+        new_labels = np.array(label_binarizer.inverse_transform(labels))
+
+        return new_labels

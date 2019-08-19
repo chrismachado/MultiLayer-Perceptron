@@ -1,0 +1,51 @@
+DATASET USED: xor
+HIDDEN ACTIVATION FUNCTION: tanh
+OUTPUT ACTIVATION FUNCTION: tanh
+
+INPUT SIZE: 02
+HIDDEN SIZE: 10
+OUTPUT SIZE: 02
+
+EPOCHS: None
+
+TIME:  0.18m
+
+BEST REALIZATION: 20
+WORST REALIZATION: 20
+
+CROSS VALIDATION (BEST)
+|========================================|
+| 10	 |12	 |14	 |16	 |18	 |20	 |22	 |24	 |26	 |28	 |30	 |
+|100.000000	 |100.000000	 |100.000000	 |100.000000	 |100.000000	 |100.000000	 |100.000000	 |100.000000	 |100.000000	 |100.000000	 |100.000000	 |
+|========================================|
+
+=> Realização 1 : Computation 100.00  
+=> Realização 2 : Computation 100.00  
+=> Realização 3 : Computation 100.00  
+=> Realização 4 : Computation 100.00  
+=> Realização 5 : Computation 100.00  
+=> Realização 6 : Computation 100.00  
+=> Realização 7 : Computation 100.00  
+=> Realização 8 : Computation 100.00  
+=> Realização 9 : Computation 100.00  
+=> Realização 10 : Computation 100.00  
+=> Realização 11 : Computation 100.00  
+=> Realização 12 : Computation 100.00  
+=> Realização 13 : Computation 100.00  
+=> Realização 14 : Computation 100.00  
+=> Realização 15 : Computation 100.00  
+=> Realização 16 : Computation 100.00  
+=> Realização 17 : Computation 100.00  
+=> Realização 18 : Computation 100.00  
+=> Realização 19 : Computation 100.00  
+=> Realização 20 : Computation 100.00  
+
+RESULTADO FINAL
+|========================================|
+|==  Acurácia : 100.00                    |
+|==  Standard Deviation : 0.000000            |
+|========================================|
+
+CONFUSION MATRIX
+[[24  0]
+ [ 0 16]]

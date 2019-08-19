@@ -81,19 +81,37 @@ class Realization(object):
 
         self.save_weights(clf.hidden_neurons_layer, clf.output_neurons_layer, clf._output_act_func_)
 
+        print("Hidden size: %02d" % clf._hidden_neurons)
+        if clf._output_act_func_ != 'regression':
+            cm = PlotUtil.plot_conf_matrix(classifier=self.classifier,
+                                      predict=clf.predict_1D(X_test),
+                                      desired_label=y_test,
+                                      chosen_base=self.problem,
+                                      n_labels=clf._output_neurons)
+        else:
+            cm = "It don't have confusion matrix"
+
         if clf._output_act_func_ == 'regression':
             print("MSE                  : %4.6f" % np.mean(accuracy))
             print("RMSE                  : %4.6f" % np.mean(np.sqrt(accuracy)))
-            PlotUtil.plot_regression(X_test, y_test, clf, problem=self.problem, act_func=clf._output_act_func_, classifier=self.classifier)
+            PlotUtil.plot_regression(X_test, y_test, clf,
+                                     problem=self.problem,
+                                     act_func=clf._output_act_func_,
+                                     classifier=self.classifier)
         else:
-            print("Accuracy            : %4.2f" % np.mean(accuracy))
-            # if 1 <= clf._input_neurons <= 2:
-            #     PlotUtil.plot_decision_boundary(X_test, clf.boundary_decision(X_test), clf)
-
+            print("Accuracy            : %4.6f" % np.mean(accuracy))
+            if 1 <= clf._input_neurons <= 2:
+                PlotUtil.plot_decision_boundary(X_plot,
+                                                y_plot,
+                                                clf.boundary_decision(X_test),
+                                                clf,
+                                                classifier=self.classifier,
+                                                X_highlights=X_test,
+                                                problem=self.problem)
         print("Standard Deviations : %.6f" % (np.std(accuracy)))
 
         # Write in file
-        with open("log/%s-p(%s)-f(%s)-i%s-h%s-o%s" % (self.classifier,
+        with open("log_model/%s-p(%s)-f(%s)-i%s-h%s-o%s" % (self.classifier,
                                                            self.problem,
                                                        clf._output_act_func_,
                                                        X.shape[1],
@@ -144,12 +162,14 @@ class Realization(object):
                 f.write("|==  Standard Deviation : %.6f            |\n" % np.std(accuracy))
             f.write("|========================================|\n")
 
+            f.write("\nCONFUSION MATRIX\n")
+            f.write("%s" % cm)
 
 
     def save_weights(self, hidden_layer, output_layer, output_act_func):
         hidden_neurons = len(hidden_layer)
         output_neurons = len(output_layer)
-        with open("weight_log/%s-p(%s)-f(%s)-h%s-o%s" % (self.classifier,
+        with open("log_weight/%s-p(%s)-f(%s)-h%s-o%s" % (self.classifier,
                                                       self.problem,
                                                       output_act_func,
                                                       hidden_neurons,

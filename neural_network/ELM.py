@@ -79,6 +79,8 @@ class ELM(object):
 
     def feedforward(self, X, y):
         W, M = self.join_weights()
+
+        #Training
         U = X.dot(W.T)
 
         H = self._hidden_act_func.function(U) # XTW
@@ -102,20 +104,9 @@ class ELM(object):
     def classify(self, X, y):
         hitrate = 0
         for xi, target in zip(X, y):
-            y_obtained = list()
-            xi = np.insert(xi, 0, -1)
-            H = list()
+            Y = self.feedfoward_output(xi)
+            y_obtained = self.around(Y)
 
-            for i in range(self._hidden_neurons):
-                self.hidden_neurons_layer[i].activation(xi)
-                H.append(self.hidden_neurons_layer[i].get_h())
-
-            H = np.insert(H, 0, -1)
-            for j in range(self._output_neurons):
-                self.output_neurons_layer[j].activation(H)
-                y_obtained.append(self.output_neurons_layer[j].get_y())
-
-            y_obtained = self.around(y_obtained)
             if np.array_equal(y_obtained.astype(int), target):
                 hitrate += 1
 
@@ -123,19 +114,8 @@ class ELM(object):
 
     def estimate(self, X, y):
         y_obtained = list()
-        for xi, target in zip(X, y):
-            xi = np.insert(xi, 0, -1)
-            H = list()
-            for i in range(self._hidden_neurons):
-                self.hidden_neurons_layer[i].activation(xi)
-                H.append(self.hidden_neurons_layer[i].get_h())
-
-            H = np.insert(H, 0, -1)
-            Y = list()
-            for j in range(self._output_neurons):
-                self.output_neurons_layer[j].activation(H)
-                Y.append(self.output_neurons_layer[j].get_y())
-
+        for x in X:
+            Y = self.feedfoward_output(x)
             y_obtained.append(Y)
 
         return mean_squared_error(y, y_obtained)
@@ -172,19 +152,15 @@ class ELM(object):
 
     def predict_1D(self, X):
         y = list()
-        for x in X:
-            # Y = np.array(self.feedforward(xi=x)[2])
-            Y = list()
-            self.feedforward(x)
-            for j in range(self._output_neurons):
-                Y.append(self.output_neurons_layer[j].get_y())
-            y.append(Y)
+        for xi in X:
+            Y = self.feedfoward_output(xi)
+            y.append(self.around(Y))
         return np.array(y)
 
     def boundary_decision(self, X):
         y = list()
-        for x in X:
-            Y = self.feedforward(xi=x)[2] # array of Y
+        for xi in X:
+            Y = self.feedfoward_output(xi)
             y_obtained = self.around(Y)
             if np.array_equal(y_obtained.astype(int), [0, 1]):
                 y.append(0)
@@ -203,3 +179,17 @@ class ELM(object):
 
         return np.asarray(W), np.asarray(M)
 
+    def feedfoward_output(self, x):
+        x = np.insert(x, 0, -1)
+        H = list()
+        for i in range(self._hidden_neurons):
+            self.hidden_neurons_layer[i].activation(x)
+            H.append(self.hidden_neurons_layer[i].get_h())
+
+        H = np.insert(H, 0, -1)
+        Y = list()
+
+        for j in range(self._output_neurons):
+            self.output_neurons_layer[j].activation(H)
+            Y.append(self.output_neurons_layer[j].get_y())
+        return np.asarray(Y)

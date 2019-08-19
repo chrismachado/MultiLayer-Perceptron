@@ -13,7 +13,7 @@ class Problem(object):
         self.vu = VectorUtilities()
 
     def get_dataset(self):
-        print("Collecting dataset from → ", end='')
+        print("Collecting dataset from -> ", end='')
         X, y = (None, None)
 
         if self.__problem == 'iris':

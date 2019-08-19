@@ -19,26 +19,29 @@ from utilities.PlotLib import PlotUtil
 
 
 def main():
+    hidden_act_func = 'tanh'
+    output_act_func = 'tanh'
+    desc_prob = ['xor', 'iris', 'column', 'breast_cancer', 'dermatology']
 
-    hidden_act_func = 'logistic'
-    output_act_func = 'regression'
-    desc_prob = 'regression'
+    for p in desc_prob:
+        prob = Problem(problem=p,
+                       act_func=output_act_func)
+        X, y = prob.get_dataset()
 
-    prob = Problem(problem=desc_prob, act_func=output_act_func)
-    X, y = prob.get_dataset()
-
-    input_size = X.shape[1]
-    hidden_size = 22
-    output_size = y[0].shape[0]
-
-    elm = ELM(input_size, hidden_size, output_size,
+        input_size = X.shape[1]
+        hidden_size = [i for i in range(10, 32, 2)]
+        output_size = y[0].shape[0]
+        elm = ELM(input_size, None, output_size,
               hidden_act_func=hidden_act_func,
               output_act_func=output_act_func)
 
-    Realization(classifier='elm', problem=desc_prob, k=5, hidden_size=[i for i in range(12, 24, 2)]).execution(X=X,
+        Realization(classifier='elm',
+                    problem=p,
+                    k=5,
+                    hidden_size=hidden_size).execution(X=X,
                                                   y=y,
                                                   clf=elm,
-                                                  num=1)
+                                                  num=20)
 
 
 if __name__ == '__main__':

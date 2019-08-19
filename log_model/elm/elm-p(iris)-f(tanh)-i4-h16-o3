@@ -1,0 +1,52 @@
+DATASET USED: iris
+HIDDEN ACTIVATION FUNCTION: tanh
+OUTPUT ACTIVATION FUNCTION: tanh
+
+INPUT SIZE: 04
+HIDDEN SIZE: 16
+OUTPUT SIZE: 03
+
+EPOCHS: None
+
+TIME:  0.15m
+
+BEST REALIZATION: 13
+WORST REALIZATION: 20
+
+CROSS VALIDATION (BEST)
+|========================================|
+| 10	 |12	 |14	 |16	 |18	 |20	 |22	 |24	 |26	 |28	 |30	 |
+|94.166667	 |95.000000	 |95.000000	 |96.666667	 |94.166667	 |94.166667	 |92.500000	 |93.333333	 |92.500000	 |94.166667	 |93.333333	 |
+|========================================|
+
+=> Realização 1 : Computation 93.33  
+=> Realização 2 : Computation 96.67  
+=> Realização 3 : Computation 96.67  
+=> Realização 4 : Computation 96.67  
+=> Realização 5 : Computation 100.00  
+=> Realização 6 : Computation 96.67  
+=> Realização 7 : Computation 93.33  
+=> Realização 8 : Computation 96.67  
+=> Realização 9 : Computation 100.00  
+=> Realização 10 : Computation 93.33  
+=> Realização 11 : Computation 100.00  
+=> Realização 12 : Computation 100.00  
+=> Realização 13 : Computation 100.00  
+=> Realização 14 : Computation 96.67  
+=> Realização 15 : Computation 93.33  
+=> Realização 16 : Computation 96.67  
+=> Realização 17 : Computation 93.33  
+=> Realização 18 : Computation 96.67  
+=> Realização 19 : Computation 96.67  
+=> Realização 20 : Computation 93.33  
+
+RESULTADO FINAL
+|========================================|
+|==  Acurácia : 96.50                    |
+|==  Standard Deviation : 0.024664            |
+|========================================|
+
+CONFUSION MATRIX
+[[12  0  0]
+ [ 0  7  0]
+ [ 0  0 11]]
