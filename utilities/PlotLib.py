@@ -77,8 +77,18 @@ class PlotUtil(object):
     @staticmethod
     def plot_regression(X, y, clf, problem, act_func, classifier):
         plt.figure()
+
+        argmin, argmax = X.min() - .2, X.max() + .2
+        h = 0.01
+        print(argmax, argmin)
+        xx = np.arange(argmin, argmax, h)
+        xx = np.reshape(xx, newshape=(len(xx), 1))
+        print(xx.shape)
+        # print(clf.predictions(xx))
+
         plt.scatter(X, y)
-        plt.scatter(X, clf.predictions(X), c='r', linestyle='-')
+        plt.scatter(xx, clf.predictions(xx), c='r', linestyle='-', s=2)
+        # plt.scatter(X, clf.predictions(X), c='r', linestyle='-')
         plt.title("Regression → %s (%s,%s,%s)" % (classifier,
                                                   clf._input_neurons,
                                                   clf._hidden_neurons,
